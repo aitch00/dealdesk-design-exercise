@@ -1,0 +1,13 @@
+{
+  "name": "dealdesk-prototype-tests",
+  "private": true,
+  "description": "Browser tests for the DealDesk prototype. Never loaded by the pages.",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test --trace off"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "axe-core": "4.10.3"
+  }
+}

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DealDesk&nbsp;· A second look before deal messages leave</title>
+  <meta name="description" content="DealDesk helps boutique transaction-advisory firms check who a deal message is going to and what it promises before it's sent.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/home.css">
+  <script type="module" src="js/input-mode.js"></script>
+  <script type="module" src="js/home.js"></script>
+</head>
+<body>
+  <!-- Copy: docs/4-design/screens-and-states.md, "Homepage copy" (decisions UF16, UF34–UF50).
+       The page tells one idea: a deal message can look ready and not be (docs/4-design/screens-and-states.md § 2).
+       Elements with class product-sample copy the sample review's own text: the claim checks of AC-4 skip them (UF40).
+       Without JavaScript the draft shows its findings and each card is a link to its state (UF46, UF47). -->
+  <a class="skip-link" href="#content" data-source="docs/4-design/screens-and-states.md">Skip to content</a>
+
+  <header class="home-header">
+    <p class="wordmark" data-source="docs/4-design/screens-and-states.md">DealDesk</p>
+    <a class="btn" href="app.html#/start" data-source="docs/4-design/screens-and-states.md" data-req="WEB-07">Try the sample review</a>
+  </header>
+
+  <main id="content" tabindex="-1" data-req="QLT-01 QLT-02 QLT-03 QLT-06 QLT-09 QLT-11">
+    <!-- Beat 0 and 1: the promise, then the draft as written and at a second look. -->
+    <section class="hero" aria-labelledby="hero-title" data-req="WEB-01 WEB-02 WEB-03 WEB-06 WEB-07 WEB-09 WEB-19 WEB-20">
+      <div class="hero-text">
+        <h1 id="hero-title" data-source="docs/4-design/screens-and-states.md">A second look before deal messages leave.</h1>
+        <p class="lede" data-source="docs/4-design/screens-and-states.md">DealDesk helps boutique transaction-advisory firms check who a deal message is going to and what it promises before it's sent. It asks for a decision only when something needs one.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="app.html#/start" data-source="docs/4-design/screens-and-states.md">Try the sample review</a>
+          <p class="meta" data-source="docs/4-design/screens-and-states.md">No sign-up. Sample data, nothing is sent.</p>
+        </div>
+      </div>
+
+      <div class="second-look" data-look="second">
+        <p class="look-summary">
+          <span class="when-written" data-source="docs/4-design/screens-and-states.md">This message looks ready. Two issues block it, and one is a warning.</span>
+          <span class="when-second" data-source="docs/4-design/screens-and-states.md">Two issues block this message, and one is a warning.</span>
+        </p>
+        <div class="draft-sheet">
+        <figure class="draft product-sample" id="draft" aria-labelledby="draft-caption">
+          <figcaption id="draft-caption" class="draft-caption" data-source="docs/4-design/screens-and-states.md">Project Harbor&nbsp;· draft to the client</figcaption>
+          <div class="draft-head">
+            <p><span class="draft-key" data-source="docs/4-design/screens-and-states.md">To</span> <span data-source="docs/4-design/screens-and-states.md">Pat Morgan&nbsp;· Alex Rivera</span></p>
+            <p><span class="draft-key" data-source="docs/4-design/screens-and-states.md">Cc</span> <span class="mark-recipient" data-source="docs/4-design/screens-and-states.md">Sam Lee</span></p>
+            <div class="note-slot"><p class="note rule-blocks" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Blocking</span>&nbsp;· Not on the deal team&nbsp;· Works at Corvane Holdings, the client, but isn't listed on the Project Harbor deal team.</p></div>
+            <p><span class="draft-key" data-source="docs/4-design/screens-and-states.md">Subject</span> <span data-source="docs/4-design/screens-and-states.md">Project Harbor — timeline update</span></p>
+          </div>
+          <div class="draft-body">
+            <p data-source="docs/4-design/screens-and-states.md">Hi all,</p>
+            <p><span data-source="docs/4-design/screens-and-states.md">Thanks for the productive session on Tuesday. The diligence workstreams are on track and <span class="flag-warning">we expect the remaining data-room requests to close this week.</span></span></p>
+            <div class="note-slot"><p class="note rule-warning" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Warning</span>&nbsp;· Sets a timing expectation for the client. It doesn't block sending: confirm the timing yourself before you send.</p></div>
+            <p><span class="flag-blocking" data-source="docs/4-design/screens-and-states.md">Completion is guaranteed by 30 June.</span></p>
+            <div class="note-slot"><p class="note rule-blocks" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Blocking</span>&nbsp;· Flagged wording&nbsp;· States completion as certain. The firm can't guarantee deal outcomes.</p></div>
+            <p data-source="docs/4-design/screens-and-states.md">We'll circulate the updated timeline and next steps by Friday.</p>
+            <p><span data-source="docs/4-design/screens-and-states.md">Best,</span><br><span data-source="docs/4-design/screens-and-states.md">Jordan</span></p>
+          </div>
+        </figure>
+        <div class="look-bar" hidden>
+          <button class="btn" type="button" aria-controls="draft" id="look-toggle">
+            <span class="when-written" data-source="docs/4-design/screens-and-states.md">Take a second look</span>
+            <span class="when-second" data-source="docs/4-design/screens-and-states.md">Show it as written</span>
+          </button>
+        </div>
+        </div>
+        <p class="visually-hidden" role="status" id="look-status"></p>
+        <template id="look-announcements">
+          <p data-when="second" data-source="docs/4-design/screens-and-states.md">Second look: Sam Lee isn't on the deal team. The completion sentence states an outcome as certain. The timing sentence needs a check.</p>
+          <p data-when="written" data-source="docs/4-design/screens-and-states.md">Showing the message as written.</p>
+        </template>
+      </div>
+    </section>
+
+    <!-- Beat 1, in words: what the second look found, for readers who don't press the button. -->
+    <section class="home-section" id="finds" aria-labelledby="finds-title" data-req="WEB-03 WEB-06 WEB-10">
+      <h2 id="finds-title" data-source="docs/4-design/screens-and-states.md">What a second look finds</h2>
+      <div class="section-body">
+        <p data-source="docs/4-design/screens-and-states.md">Read as written, the Project Harbor update looks ready. A second look finds three things, and they don't weigh the same:</p>
+        <ul class="findings">
+          <li class="rule-blocks" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Blocking</span>&nbsp;· Sam Lee, copied in, works at the client but isn't on the deal team.</li>
+          <li class="rule-blocks" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Blocking</span>&nbsp;· The completion date is stated as certain. The firm can't promise deal outcomes.</li>
+          <li class="rule-warning" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Warning</span>&nbsp;· The timing of the data-room requests is an expectation. It can go if the timing is confirmed.</li>
+        </ul>
+        <p><span data-source="docs/4-design/screens-and-states.md">Sam's name and address are familiar, so nothing in the email looks wrong.</span> <span data-source="docs/4-design/screens-and-states.md">Generic warnings look the same every time, so people learn to dismiss them.</span> <span data-source="docs/4-design/screens-and-states.md">DealDesk compares each recipient with the deal team and explains each issue next to the line it's about.</span></p>
+      </div>
+    </section>
+
+    <!-- Beat 2: who decides. Each card opens a sheet; without JavaScript it is a link to its state. -->
+    <section class="home-section" id="decide" tabindex="-1" aria-labelledby="decide-title" data-req="WEB-04 WEB-08">
+      <h2 id="decide-title" data-source="docs/4-design/screens-and-states.md">What you fix, and what the deal owner decides</h2>
+      <div class="section-body">
+        <p data-source="docs/4-design/screens-and-states.md">The coordinator fixes what they can, like removing Sam or rewording a sentence. An exception goes to the deal owner, and coordinators can't approve their own.</p>
+        <ol class="cards">
+          <li>
+            <a class="card" href="app.html?from=decide#/jump/flagged" data-sheet="blocking">
+              <span class="card-step" data-source="docs/4-design/screens-and-states.md">The check finds it</span>
+              <span class="recipient rule-blocks product-sample">
+                <svg class="icon i-octagon" aria-hidden="true" viewBox="0 0 24 24"><path d="M8.3 3h7.4L21 8.3v7.4L15.7 21H8.3L3 15.7V8.3z"/><path d="M8 12h8"/></svg>
+                <span class="detail" data-source="docs/4-design/screens-and-states.md"><span class="name">Sam Lee</span>&nbsp;· <strong>Blocking</strong>&nbsp;· Not on the deal team</span>
+              </span>
+              <span class="card-open" data-source="docs/4-design/screens-and-states.md">What happens here</span>
+            </a>
+          </li>
+          <li>
+            <a class="card" href="app.html?from=decide#/jump/pending" data-sheet="pending">
+              <span class="card-step" data-source="docs/4-design/screens-and-states.md">The coordinator asks</span>
+              <span class="recipient rule-blocks is-waiting product-sample">
+                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                <span class="detail" data-source="docs/4-design/screens-and-states.md"><span class="name">Sam Lee</span>&nbsp;· <strong>Pending</strong>&nbsp;· Not approved yet. Sending stays blocked.</span>
+              </span>
+              <span class="card-open" data-source="docs/4-design/screens-and-states.md">What happens here</span>
+            </a>
+          </li>
+          <li>
+            <a class="card" href="app.html?from=decide#/jump/approved" data-sheet="approved">
+              <span class="card-step" data-source="docs/4-design/screens-and-states.md">The deal owner decides</span>
+              <span class="recipient rule-none product-sample">
+                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.2 9.6"/></svg>
+                <span class="detail" data-source="docs/4-design/screens-and-states.md"><span class="name">Sam Lee</span>&nbsp;· <strong>Approved</strong> by Dana Whitfield&nbsp;· for version 2</span>
+              </span>
+              <span class="card-open" data-source="docs/4-design/screens-and-states.md">What happens here</span>
+            </a>
+          </li>
+        </ol>
+        <p><span data-source="docs/4-design/screens-and-states.md">Coordinators write or paste each draft in DealDesk and send it from their usual email.</span> <span data-source="docs/4-design/screens-and-states.md">Deal owners keep their deal's team list up to date and only hear about messages that need a decision.</span></p>
+      </div>
+    </section>
+
+    <!-- Beat 3: ready means this version. The comparison is the content: no interaction. -->
+    <section class="home-section" id="ready" tabindex="-1" aria-labelledby="ready-title" data-req="WEB-04 WEB-08">
+      <h2 id="ready-title" data-source="docs/4-design/screens-and-states.md">Ready means this version</h2>
+      <div class="section-body">
+        <p data-source="docs/4-design/screens-and-states.md">An approval covers the version the deal owner saw. If the message changes, the check and the approval no longer count.</p>
+        <div class="version-change">
+          <a class="recipient rule-none product-sample state-link" href="app.html?from=ready#/jump/approved" data-source="docs/4-design/screens-and-states.md">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.2 9.6"/></svg>
+            <span class="detail"><span class="name">Sam Lee</span>&nbsp;· <strong>Approved</strong> by Dana Whitfield&nbsp;· for version 2</span><span class="visually-hidden" data-source="docs/4-design/screens-and-states.md"> (opens this state in the sample review)</span>
+          </a>
+          <p class="change-note" data-source="docs/4-design/screens-and-states.md">Jordan edits the message.</p>
+          <a class="recipient rule-blocks product-sample state-link" href="app.html?from=ready#/jump/edited-after-approval" data-source="docs/4-design/screens-and-states.md">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4.5 12.5l4.5 4.5L19.5 6.5"/><path d="M3 11.5h18"/></svg>
+            <span class="detail"><span class="name">Sam Lee</span>&nbsp;· <strong>Blocking</strong>&nbsp;· Not on the deal team&nbsp;· <strong>Approved on version 2&nbsp;· doesn't cover version 3</strong></span><span class="visually-hidden" data-source="docs/4-design/screens-and-states.md"> (opens this state in the sample review)</span>
+          </a>
+        </div>
+        <p><a href="app.html?from=ready#/jump/ready" data-source="docs/4-design/screens-and-states.md">When nothing blocks it, the message can go. A warning doesn't block sending.</a></p>
+        <p data-source="docs/4-design/screens-and-states.md">Partners and operations leads can read <a href="app.html?from=ready#/jump/sent">the review record of each message</a>: the version, the issues and who decided what.</p>
+      </div>
+    </section>
+
+    <!-- Beat 4: the limits, all visible. -->
+    <section class="home-section" id="limits" tabindex="-1" aria-labelledby="limits-title" data-req="WEB-05 WEB-13">
+      <h2 id="limits-title" data-source="docs/4-design/screens-and-states.md">What DealDesk doesn't do</h2>
+      <div class="section-body">
+        <ul class="home-list">
+          <li data-source="docs/4-design/screens-and-states.md">It doesn't send email and can't stop anyone sending from their own. 'Blocked' means the current version isn't ready to send.</li>
+          <li data-source="docs/4-design/screens-and-states.md">It isn't a legal or compliance engine.</li>
+          <li data-source="docs/4-design/screens-and-states.md">Its checks can miss things: it relies on an up-to-date deal team list, and flagged wording is a prompt to review, not a verdict.</li>
+          <li data-source="docs/4-design/screens-and-states.md">It can't see a message once it leaves DealDesk: the record covers the version reviewed here.</li>
+        </ul>
+        <p><a href="app.html?from=limits#/jump/review-unavailable" data-source="docs/4-design/screens-and-states.md">If review is unavailable, the draft is saved and sending stays blocked until the check runs.</a></p>
+        <p data-source="docs/4-design/screens-and-states.md">DealDesk supports judgment; it doesn't replace it.</p>
+      </div>
+    </section>
+
+    <!-- Beat 5: the invitation. -->
+    <section class="home-section home-cta" id="try" aria-labelledby="try-title" data-req="WEB-07">
+      <h2 id="try-title" data-source="docs/4-design/screens-and-states.md">Take the second look yourself</h2>
+      <div class="section-body">
+        <p data-source="docs/4-design/screens-and-states.md">Project Harbor is a fictional deal with one draft to review. You act as the coordinator; the deal owner's answers are simulated.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="app.html#/start" data-source="docs/4-design/screens-and-states.md">Try the sample review</a>
+          <p class="meta" data-source="docs/4-design/screens-and-states.md">No sign-up. Sample data, nothing is sent.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sheets of beat 2 (UF47): opened by the cards, one at a time; Previous and Next walk the sequence. -->
+  <dialog class="sheet" id="sheet-blocking" aria-labelledby="sheet-blocking-title" data-step="blocking">
+    <div class="sheet-inner">
+      <div class="sheet-top">
+        <h3 id="sheet-blocking-title" tabindex="-1" data-source="docs/4-design/screens-and-states.md">The check finds Sam Lee</h3>
+        <button class="btn" type="button" data-close data-source="docs/4-design/screens-and-states.md">Close</button>
+      </div>
+      <p class="recipient rule-blocks product-sample">
+        <svg class="icon i-octagon" aria-hidden="true" viewBox="0 0 24 24"><path d="M8.3 3h7.4L21 8.3v7.4L15.7 21H8.3L3 15.7V8.3z"/><path d="M8 12h8"/></svg>
+        <span class="detail" data-source="docs/4-design/screens-and-states.md"><span class="name">Sam Lee</span>&nbsp;· <strong>Blocking</strong>&nbsp;· Not on the deal team</span>
+      </p>
+      <dl>
+        <div><dt data-source="docs/4-design/screens-and-states.md">What it means</dt><dd data-source="docs/4-design/screens-and-states.md">Sam Lee works at Corvane Holdings, the client, but isn't listed on the Project Harbor deal team. The message can't be sent with Sam on it.</dd></div>
+        <div><dt data-source="docs/4-design/screens-and-states.md">Who acts</dt><dd data-source="docs/4-design/screens-and-states.md">The coordinator. They can remove Sam, or ask the deal owner for an exception.</dd></div>
+        <div><dt data-source="docs/4-design/screens-and-states.md">What happens next</dt><dd data-source="docs/4-design/screens-and-states.md">If they ask, Sam's row shows Pending until Dana Whitfield decides.</dd></div>
+      </dl>
+      <p><a href="app.html?from=decide#/jump/flagged" data-source="docs/4-design/screens-and-states.md">Open this state in the sample review</a></p>
+      <div class="sheet-nav">
+        <button class="btn" type="button" data-go="pending" data-source="docs/4-design/screens-and-states.md">Next step</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet" id="sheet-pending" aria-labelledby="sheet-pending-title" data-step="pending">
+    <div class="sheet-inner">
+      <div class="sheet-top">
+        <h3 id="sheet-pending-title" tabindex="-1" data-source="docs/4-design/screens-and-states.md">The coordinator asks Dana Whitfield</h3>
+        <button class="btn" type="button" data-close data-source="docs/4-design/screens-and-states.md">Close</button>
+      </div>
+      <p class="recipient rule-blocks is-waiting product-sample">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span class="detail" data-source="docs/4-design/screens-and-states.md"><span class="name">Sam Lee</span>&nbsp;· <strong>Pending</strong>&nbsp;· Requested from Dana Whitfield&nbsp;· Not approved yet. Sending stays blocked.</span>
+      </p>
+      <dl>
+        <div><dt data-source="docs/4-design/screens-and-states.md">What it means</dt><dd data-source="docs/4-design/screens-and-states.md">A request isn't an approval. Until Dana decides, sending stays blocked.</dd></div>
+        <div><dt data-source="docs/4-design/screens-and-states.md">Who acts</dt><dd data-source="docs/4-design/screens-and-states.md">Dana Whitfield, the deal owner. Coordinators can't approve their own exceptions.</dd></div>
+        <div><dt data-source="docs/4-design/screens-and-states.md">What happens next</dt><dd data-source="docs/4-design/screens-and-states.md">Dana approves or declines, and DealDesk records the decision with the version it applies to.</dd></div>
+      </dl>
+      <p><a href="app.html?from=decide#/jump/pending" data-source="docs/4-design/screens-and-states.md">Open this state in the sample review</a></p>
+      <div class="sheet-nav">
+        <button class="btn" type="button" data-go="blocking" data-source="docs/4-design/screens-and-states.md">Previous step</button>
+        <button class="btn" type="button" data-go="approved" data-source="docs/4-design/screens-and-states.md">Next step</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="sheet" id="sheet-approved" aria-labelledby="sheet-approved-title" data-step="approved">
+    <div class="sheet-inner">
+      <div class="sheet-top">
+        <h3 id="sheet-approved-title" tabindex="-1" data-source="docs/4-design/screens-and-states.md">Dana Whitfield approves Sam</h3>
+        <button class="btn" type="button" data-close data-source="docs/4-design/screens-and-states.md">Close</button>
+      </div>
+      <p class="recipient rule-none product-sample">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.2 9.6"/></svg>
+        <span class="detail" data-source="docs/4-design/screens-and-states.md"><span class="name">Sam Lee</span>&nbsp;· <strong>Approved</strong> by Dana Whitfield&nbsp;· for version 2</span>
+      </p>
+      <dl>
+        <div><dt data-source="docs/4-design/screens-and-states.md">What it means</dt><dd data-source="docs/4-design/screens-and-states.md">Sam can receive this version of the message.</dd></div>
+        <div><dt data-source="docs/4-design/screens-and-states.md">Who acts</dt><dd data-source="docs/4-design/screens-and-states.md">No one, as long as the message doesn't change.</dd></div>
+        <div><dt data-source="docs/4-design/screens-and-states.md">What happens next</dt><dd data-source="docs/4-design/screens-and-states.md">If anyone edits the message, the approval no longer covers it and Sam is blocked again.</dd></div>
+      </dl>
+      <p><a href="app.html?from=decide#/jump/approved" data-source="docs/4-design/screens-and-states.md">Open this state in the sample review</a></p>
+      <div class="sheet-nav">
+        <button class="btn" type="button" data-go="pending" data-source="docs/4-design/screens-and-states.md">Previous step</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="home-footer" data-req="GEN-07 WEB-14 WEB-15 WEB-16 WEB-17">
+    <p data-source="docs/4-design/screens-and-states.md">DealDesk is a fictional product made for a design exercise.</p>
+    <h2 id="starting-points" data-source="docs/4-design/screens-and-states.md">Starting points</h2>
+    <ul class="starting-points" aria-labelledby="starting-points">
+      <li><a href="index.html" data-source="docs/4-design/screens-and-states.md">Homepage</a></li>
+      <li><a href="app.html#/start" data-source="docs/4-design/screens-and-states.md">Sample review from the start</a></li>
+      <li><a href="app.html#/jump/flagged" data-source="docs/4-design/screens-and-states.md">Jump: Sam flagged, nothing changed yet</a></li>
+      <li><a href="app.html#/jump/escalated-first" data-source="docs/4-design/screens-and-states.md">Jump: Sam escalated, wording still open</a></li>
+      <li><a href="app.html#/jump/pending" data-source="docs/4-design/screens-and-states.md">Jump: exception request pending</a></li>
+      <li><a href="app.html#/jump/approved" data-source="docs/4-design/screens-and-states.md">Jump: Sam approved by the deal owner</a></li>
+      <li><a href="app.html#/jump/edited-after-approval" data-source="docs/4-design/screens-and-states.md">Jump: approved, then edited</a></li>
+      <li><a href="app.html#/jump/review-unavailable" data-source="docs/4-design/screens-and-states.md">Jump: check unavailable</a></li>
+      <li><a href="app.html#/jump/ready" data-source="docs/4-design/screens-and-states.md">Jump: ready to send</a></li>
+      <li><a href="app.html#/jump/sent" data-source="docs/4-design/screens-and-states.md">Jump: sent</a></li>
+    </ul>
+  </footer>
+</body>
+</html>

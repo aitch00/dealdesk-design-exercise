@@ -1,0 +1,124 @@
+{
+  "seedVersion": "harbor-1",
+  "schemaVersion": 1,
+  "clockStart": "10:30",
+  "actorId": "p-jordan",
+  "organisations": [
+    { "id": "org-halden", "name": "Halden & Ward Advisory", "kind": "firm" },
+    { "id": "org-corvane", "name": "Corvane Holdings", "kind": "client" },
+    { "id": "org-marlow", "name": "Marlow Freight", "kind": "client" },
+    { "id": "org-atlas", "name": "Atlas Renewables", "kind": "client" }
+  ],
+  "people": [
+    { "id": "p-jordan", "name": "Jordan Blake", "email": "jordan.blake@haldenward.example", "organisationId": "org-halden" },
+    { "id": "p-dana", "name": "Dana Whitfield", "email": "dana.whitfield@haldenward.example", "organisationId": "org-halden" },
+    { "id": "p-pat", "name": "Pat Morgan", "email": "pat.morgan@haldenward.example", "organisationId": "org-halden" },
+    { "id": "p-alex", "name": "Alex Rivera", "email": "alex.rivera@corvane.example", "organisationId": "org-corvane" },
+    { "id": "p-sam", "name": "Sam Lee", "email": "sam.lee@corvane.example", "organisationId": "org-corvane" },
+    { "id": "p-robin", "name": "Robin Hale", "email": "robin.hale@haldenward.example", "organisationId": "org-halden" },
+    { "id": "p-casey", "name": "Casey Nguyen", "email": "casey.nguyen@marlow.example", "organisationId": "org-marlow" },
+    { "id": "p-morgan", "name": "Morgan Ellis", "email": "morgan.ellis@atlas.example", "organisationId": "org-atlas" }
+  ],
+  "deals": [
+    { "id": "deal-harbor", "name": "Project Harbor", "ownerId": "p-dana" },
+    { "id": "deal-harrow", "name": "Project Harrow", "ownerId": "p-robin" },
+    { "id": "deal-atlas", "name": "Project Atlas", "ownerId": "p-dana" },
+    { "id": "deal-lumen", "name": "Project Lumen", "ownerId": "p-robin" }
+  ],
+  "teamMembers": [
+    { "dealId": "deal-harbor", "personId": "p-dana", "role": "Deal owner" },
+    { "dealId": "deal-harbor", "personId": "p-jordan", "role": "Coordinator" },
+    { "dealId": "deal-harbor", "personId": "p-pat", "role": "Advisor" },
+    { "dealId": "deal-harbor", "personId": "p-alex", "role": "Client representative" },
+    { "dealId": "deal-harrow", "personId": "p-robin", "role": "Deal owner" },
+    { "dealId": "deal-harrow", "personId": "p-casey", "role": "Client representative" },
+    { "dealId": "deal-atlas", "personId": "p-dana", "role": "Deal owner" },
+    { "dealId": "deal-atlas", "personId": "p-morgan", "role": "Client representative" },
+    { "dealId": "deal-lumen", "personId": "p-robin", "role": "Deal owner" }
+  ],
+  "wordingPatterns": [
+    {
+      "id": "guaranteed-completion",
+      "match": "\\bguaranteed?\\b",
+      "severity": "blocking",
+      "label": "Guaranteed completion",
+      "explanation": "States completion as certain. The firm can't guarantee deal outcomes.",
+      "suggestion": "We are working towards completion by 30 June."
+    },
+    {
+      "id": "timing-expectation",
+      "match": "\\bwe expect\\b[^.]*\\bthis week\\b",
+      "severity": "warning",
+      "label": "Timing expectation",
+      "explanation": "Sets a timing expectation for the client. It doesn't block sending: confirm the timing yourself before you send.",
+      "suggestion": null
+    }
+  ],
+  "drafts": [
+    {
+      "id": "draft-harbor-timeline",
+      "dealId": "deal-harbor",
+      "authorId": "p-jordan",
+      "currentVersionId": "v-harbor-1",
+      "interactive": true,
+      "staticStatusLabel": null,
+      "lastOpenedAt": null
+    },
+    { "id": "draft-harbor-index", "dealId": "deal-harbor", "authorId": "p-jordan", "currentVersionId": "v-static-1", "interactive": false, "staticStatusLabel": "Sent (simulated) · Yesterday", "lastOpenedAt": null },
+    { "id": "draft-harrow-kickoff", "dealId": "deal-harrow", "authorId": "p-jordan", "currentVersionId": "v-static-2", "interactive": false, "staticStatusLabel": "Ready to send", "lastOpenedAt": null },
+    { "id": "draft-harrow-nda", "dealId": "deal-harrow", "authorId": "p-jordan", "currentVersionId": "v-static-3", "interactive": false, "staticStatusLabel": "Needs a check", "lastOpenedAt": null },
+    { "id": "draft-atlas-qa", "dealId": "deal-atlas", "authorId": "p-jordan", "currentVersionId": "v-static-4", "interactive": false, "staticStatusLabel": "Waiting for decision", "lastOpenedAt": null },
+    { "id": "draft-atlas-model", "dealId": "deal-atlas", "authorId": "p-jordan", "currentVersionId": "v-static-5", "interactive": false, "staticStatusLabel": "Ready to send", "lastOpenedAt": null },
+    { "id": "draft-lumen-intro", "dealId": "deal-lumen", "authorId": "p-jordan", "currentVersionId": "v-static-6", "interactive": false, "staticStatusLabel": "Needs a check", "lastOpenedAt": null }
+  ],
+  "versions": [
+    {
+      "id": "v-harbor-1",
+      "draftId": "draft-harbor-timeline",
+      "number": 1,
+      "previousVersionId": null,
+      "recipients": [
+        { "personId": "p-pat", "field": "to" },
+        { "personId": "p-alex", "field": "to" },
+        { "personId": "p-sam", "field": "cc" }
+      ],
+      "subject": "Project Harbor — timeline update",
+      "body": [
+        "Hi all,",
+        "Thanks for the productive session on Tuesday. The diligence workstreams are on track and we expect the remaining data-room requests to close this week.",
+        "Completion is guaranteed by 30 June.",
+        "We'll circulate the updated timeline and next steps by Friday.",
+        "Best,\nJordan"
+      ],
+      "createdAt": "10:20",
+      "createdBy": "p-jordan",
+      "discardedAt": null
+    },
+    { "id": "v-static-1", "draftId": "draft-harbor-index", "number": 1, "previousVersionId": null, "recipients": [{ "personId": "p-pat", "field": "to" }], "subject": "Harbor — data-room index", "body": ["Static sample draft."], "createdAt": "09:00", "createdBy": "p-jordan", "discardedAt": null },
+    { "id": "v-static-2", "draftId": "draft-harrow-kickoff", "number": 1, "previousVersionId": null, "recipients": [{ "personId": "p-casey", "field": "to" }], "subject": "Harrow — kickoff agenda", "body": ["Static sample draft."], "createdAt": "09:10", "createdBy": "p-jordan", "discardedAt": null },
+    { "id": "v-static-3", "draftId": "draft-harrow-nda", "number": 1, "previousVersionId": null, "recipients": [{ "personId": "p-casey", "field": "to" }], "subject": "Harrow — NDA follow-up", "body": ["Static sample draft."], "createdAt": "09:20", "createdBy": "p-jordan", "discardedAt": null },
+    { "id": "v-static-4", "draftId": "draft-atlas-qa", "number": 1, "previousVersionId": null, "recipients": [{ "personId": "p-morgan", "field": "to" }], "subject": "Atlas — Q&A responses", "body": ["Static sample draft."], "createdAt": "09:30", "createdBy": "p-jordan", "discardedAt": null },
+    { "id": "v-static-5", "draftId": "draft-atlas-model", "number": 1, "previousVersionId": null, "recipients": [{ "personId": "p-morgan", "field": "to" }], "subject": "Atlas — model assumptions", "body": ["Static sample draft."], "createdAt": "09:40", "createdBy": "p-jordan", "discardedAt": null },
+    { "id": "v-static-6", "draftId": "draft-lumen-intro", "number": 1, "previousVersionId": null, "recipients": [{ "personId": "p-robin", "field": "to" }], "subject": "Lumen — introduction", "body": ["Static sample draft."], "createdAt": "09:50", "createdBy": "p-jordan", "discardedAt": null }
+  ],
+  "checks": [
+    {
+      "id": "chk-1",
+      "draftId": "draft-harbor-timeline",
+      "versionId": "v-harbor-1",
+      "startedAt": "10:28",
+      "finishedAt": "10:28",
+      "outcome": "completed"
+    }
+  ],
+  "issues": [
+    { "id": "iss-1-sam", "checkId": "chk-1", "key": "recipient:p-sam", "kind": "recipient", "severity": "blocking", "personId": "p-sam" },
+    { "id": "iss-1-guarantee", "checkId": "chk-1", "key": "wording:guaranteed-completion", "kind": "wording", "severity": "blocking", "patternId": "guaranteed-completion", "matchedText": "Completion is guaranteed by 30 June.", "paragraphIndex": 2 },
+    { "id": "iss-1-timing", "checkId": "chk-1", "key": "wording:timing-expectation", "kind": "wording", "severity": "warning", "patternId": "timing-expectation", "matchedText": "The diligence workstreams are on track and we expect the remaining data-room requests to close this week.", "paragraphIndex": 1 }
+  ],
+  "requests": [],
+  "decisions": [],
+  "sendRecords": [],
+  "simulation": { "reviewAvailability": "available" },
+  "triedItems": []
+}

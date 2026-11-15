@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model tests · DealDesk sample</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <style>
+    body { margin: 0; padding: var(--space-6) var(--space-4); background: var(--color-surface); color: var(--color-text); font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-body); }
+    main { max-width: 64rem; margin: 0 auto; }
+    h1, h2 { line-height: var(--leading-heading); }
+    table { border-collapse: collapse; width: 100%; margin-block: var(--space-3) var(--space-6); font-size: var(--text-sm); }
+    th, td { text-align: left; vertical-align: top; padding: var(--space-1) var(--space-2); border-bottom: var(--border-hairline) solid var(--color-divider); }
+    td.result { font-weight: var(--weight-semibold); white-space: nowrap; }
+    code, pre { font-family: var(--font-mono); font-size: var(--text-sm); white-space: pre-wrap; word-break: break-word; }
+    .summary { font-weight: var(--weight-semibold); }
+  </style>
+</head>
+<body>
+<main id="tests" data-result="running" aria-busy="true">
+  <h1>Model tests</h1>
+  <p>Runs <code>model/scenarios.json</code> and <code>model/traces.json</code> against <code>prototype/js/model.js</code>, and compares every step with the Python reference model.</p>
+  <p class="summary" id="summary" role="status">Running…</p>
+  <h2>Scenarios</h2>
+  <div id="scenarios"></div>
+  <h2>Parity traces</h2>
+  <div id="traces"></div>
+</main>
+<script type="module">
+  import * as m from "./js/model.js";
+  import { runStep } from "./js/scenario-runner.js";
+
+  const el = (tag, text, cls) => {
+    const e = document.createElement(tag);
+    if (text !== undefined) e.textContent = text;
+    if (cls) e.className = cls;
+    return e;
+  };
+
+  // JSON round trip: the same shape the Python side wrote (tuples are lists, None is null).
+  const plain = (v) => JSON.parse(JSON.stringify(v));
+
+  function sameValue(a, b) {
+    return JSON.stringify(sortKeys(a)) === JSON.stringify(sortKeys(b));
+  }
+  function sortKeys(v) {
+    if (Array.isArray(v)) return v.map(sortKeys);
+    if (v && typeof v === "object") return Object.fromEntries(Object.keys(v).sort().map((k) => [k, sortKeys(v[k])]));
+    return v;
+  }
+  function firstDifference(got, want, path = "") {
+    if (sameValue(got, want)) return null;
+    if (got && want && typeof got === "object" && typeof want === "object" && !Array.isArray(got) && !Array.isArray(want)) {
+      for (const k of new Set([...Object.keys(got), ...Object.keys(want)])) {
+        const d = firstDifference(got[k], want[k], `${path}.${k}`);
+        if (d) return d;
+      }
+    }
+    return `${path || "value"}: expected ${JSON.stringify(want)}, got ${JSON.stringify(got)}`;
+  }
+
+  function table(headers) {
+    const t = el("table");
+    const tr = el("tr");
+    for (const h of headers) {
+      const th = el("th", h);
+      th.scope = "col";
+      tr.append(th);
+    }
+    t.append(el("thead"), el("tbody"));
+    t.tHead.append(tr);
+    return t;
+  }
+  function row(t, cells) {
+    const tr = el("tr");
+    cells.forEach(([text, cls]) => tr.append(el("td", text, cls)));
+    t.tBodies[0].append(tr);
+  }
+
+  async function runScenarios(seed, spec) {
+    let failed = 0;
+    let total = 0;
+    const box = document.getElementById("scenarios");
+    for (const sc of spec.scenarios) {
+      box.append(el("h3", `${sc.id} · ${sc.name}`));
+      const t = table(["Step", "Command", "Result", "Detail"]);
+      let s = m.initialState(seed);
+      for (const [n, step] of sc.steps.entries()) {
+        total += 1;
+        const problems = [];
+        if (step.cmd) {
+          const before = plain(m.projection(s));
+          const r = await runStep(s, step, spec.constants);
+          if (r.rejected && !step.rejected) problems.push(`rejected: ${r.message}`);
+          if (!r.rejected && step.rejected) problems.push("should be rejected");
+          if (r.rejected && !sameValue(plain(m.projection(r.state)), before)) problems.push("rejection changed the state");
+          s = r.state;
+        }
+        const proj = plain(m.projection(s));
+        for (const [k, want] of Object.entries(step.expect ?? {})) {
+          if (!sameValue(proj[k], want)) problems.push(`${k}: expected ${JSON.stringify(want)}, got ${JSON.stringify(proj[k])}`);
+        }
+        if (problems.length) failed += 1;
+        row(t, [[String(n)], [step.cmd ? `${step.cmd} (${step.actor})` : "check only"],
+                [problems.length ? "failed" : "passed", "result"], [problems.join(" · ")]]);
+      }
+      box.append(t);
+    }
+    return { failed, total };
+  }
+
+  async function runTraces(seed, data) {
+    let failed = 0;
+    let total = 0;
+    const t = table(["Trace", "Steps", "Result", "First difference"]);
+    for (const trace of data.traces) {
+      let s = m.initialState(seed);
+      let diff = null;
+      let passed = 0;
+      for (const [n, step] of trace.steps.entries()) {
+        total += 1;
+        let rejected = false;
+        let message = null;
+        try {
+          s = await m.apply(s, step.cmd, step.actor, step.params);
+        } catch (e) {
+          if (!(e instanceof m.Rejected)) throw e;
+          rejected = true;
+          message = e.message;
+        }
+        const got = {
+          rejected, message,
+          after: {
+            projection: plain(m.projection(s)),
+            contentHash: m.cur(s).contentHash,
+            clock: s.clock,
+            triedItems: [...s.triedItems],
+            undoable: s.undoable,
+          },
+        };
+        const want = { rejected: step.rejected, message: step.message, after: step.after };
+        const d = firstDifference(got, want);
+        if (d) {
+          diff = `step ${n} ${step.cmd} (${step.actor}): ${d}`;
+          failed += trace.steps.length - n;
+          break;
+        }
+        passed += 1;
+      }
+      row(t, [[trace.id], [`${passed} of ${trace.steps.length}`], [diff ? "failed" : "passed", "result"], [diff ?? ""]]);
+    }
+    document.getElementById("traces").append(t);
+    return { failed, total };
+  }
+
+  async function main() {
+    const [rawSeed, spec, traces] = await Promise.all(
+      ["../model/seed.json", "../model/scenarios.json", "../model/traces.json"].map((u) => fetch(u).then((r) => r.json())));
+    const seed = await m.loadSeed(rawSeed);
+    const a = await runScenarios(seed, spec);
+    const b = await runTraces(seed, traces);
+    const failed = a.failed + b.failed;
+    const main = document.getElementById("tests");
+    main.dataset.result = failed ? "fail" : "pass";
+    main.setAttribute("aria-busy", "false");
+    document.getElementById("summary").textContent =
+      `${failed ? "Failed" : "Passed"}: scenarios ${a.total - a.failed} of ${a.total} steps, traces ${b.total - b.failed} of ${b.total} steps.`;
+  }
+
+  main().catch((e) => {
+    const main = document.getElementById("tests");
+    main.dataset.result = "fail";
+    main.setAttribute("aria-busy", "false");
+    document.getElementById("summary").textContent = `Failed: ${e.message}`;
+    console.error(e);
+  });
+</script>
+</body>
+</html>

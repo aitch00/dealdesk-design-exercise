@@ -1,0 +1,268 @@
+/* Components of design.md §5, extracted from the design specimen.
+   Values come only from tokens.css (decision V11); the specimen renders every variant. */
+/* Wordmark: "DealDesk" in the display serif, alone (CL9). The proofreader's caret
+   stays only as the favicon (V14). */
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-xl);
+  margin: 0;
+  color: var(--color-text);
+}
+.meta { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+.data { font-family: var(--font-mono); font-size: var(--text-data); }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------ icons */
+.icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  flex: none;
+  fill: none;
+  stroke: var(--color-state-icon);
+  stroke-width: var(--icon-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.spin { animation: spin var(--duration-spin) linear infinite; transform-origin: center; }
+@keyframes spin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) {
+  .spin { animation: none; }
+}
+
+/* ----------------------------------------------------- state rules */
+.rule-blocks { border-left: var(--rule-width) solid var(--color-rule-blocks); }
+.rule-warning { border-left: var(--rule-width) dashed var(--color-rule-warning); }
+.rule-blocks.is-waiting { border-left-color: var(--color-rule-waiting); }
+
+/* State colour (CL1): red where the message must change, green where it can go;
+   the shape of the icon and the word next to it still say it without colour. */
+.icon.i-octagon, .icon.i-x-circle { stroke: var(--color-state-blocks); }
+.flag-blocking.is-waiting { text-decoration-color: var(--color-rule-waiting); }
+.rule-none { border-left: var(--rule-width) solid transparent; }
+
+/* ---------------------------------------------------------- buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  min-width: var(--target-min);
+  padding: 0 var(--space-4);
+  border: var(--border-hairline) solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+
+/* a link that looks like a button reads as one: no underline */
+a.btn { text-decoration: none; }
+
+.btn-primary {
+  background: var(--color-action);
+  border-color: var(--color-action);
+  color: var(--color-on-action);
+}
+
+.btn[aria-disabled="true"] {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+}
+
+.btn[aria-busy="true"] { cursor: progress; }
+.btn .icon { width: var(--space-4); height: var(--space-4); stroke: currentColor; }
+
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+
+/* --------------------------------------------------- state phrase */
+.state-phrase {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-control);
+}
+.state-phrase .phrase { font-weight: var(--weight-medium); }
+.state-phrase .below { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--color-text-secondary); }
+.state-phrase .below-panel {
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-hairline) solid var(--color-divider);
+  border-radius: var(--radius-control);
+  font-size: var(--text-sm);
+  display: grid;
+  gap: var(--space-1);
+}
+.state-phrase .below-panel > p:first-child { font-weight: var(--weight-semibold); }
+
+/* -------------------------------------------------- recipient row */
+.recipient {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-control);
+}
+.recipient .no-icon { width: var(--icon-size); flex: none; }
+.recipient .name { font-weight: var(--weight-semibold); }
+.recipient .detail { overflow-wrap: anywhere; }
+
+/* ------------------------------------------------ flagged sentence */
+.message {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-control);
+  padding: var(--space-3) var(--space-4);
+  max-width: var(--measure);
+}
+.flag-blocking { text-decoration: underline solid var(--color-rule-blocks) var(--underline-width); text-underline-offset: var(--space-1); }
+.flag-warning { text-decoration: underline dashed var(--color-rule-warning) var(--underline-width); text-underline-offset: var(--space-1); }
+.marker { font-family: var(--font-mono); font-size: var(--text-sm); text-decoration: none; padding: 0 var(--space-1); }
+.explanation { margin-top: var(--space-2); padding-left: var(--space-3); font-size: var(--text-sm); }
+.label-word { font-weight: var(--weight-semibold); }
+
+.field { display: grid; gap: var(--space-1); margin-top: var(--space-3); }
+.field label, .field .label { font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+.field .readonly { padding: var(--space-2) var(--space-3); background: var(--color-surface); border-radius: var(--radius-control); }
+textarea {
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  padding: var(--space-2) var(--space-3);
+  min-height: calc(var(--control-height) * 2);
+  width: 100%;
+}
+
+.changed-tag {
+  display: inline-block;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  border: var(--border-hairline) solid var(--color-border-control);
+  border-radius: var(--radius-control);
+  padding: 0 var(--space-2);
+  margin-left: var(--space-1);
+}
+
+/* ------------------------------------------------------- summary */
+.summary { padding: var(--space-3) var(--space-4); background: var(--color-surface-raised); border-radius: var(--radius-control); }
+.summary strong { font-weight: var(--weight-semibold); }
+
+/* ---------------------------------------------------- send area */
+.send-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-control);
+}
+.send-area .reason { flex: 1 1 calc(var(--space-8) * 4); }
+.send-area h3 { font-size: var(--text-md); margin: 0; flex-basis: 100%; }
+
+/* ---------------------------------------------------- mode bar */
+.mode-notice { margin-bottom: var(--space-2); }
+.mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border: var(--rule-width) solid var(--color-text);
+  border-radius: var(--radius-control);
+}
+.mode-bar .mode { font-weight: var(--weight-semibold); }
+
+/* ------------------------------------------------------- banner */
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-raised);
+  border-bottom: var(--border-hairline) solid var(--color-divider);
+}
+.banner .banner-text { flex: 1 1 calc(var(--space-8) * 4); font-size: var(--text-sm); font-weight: var(--weight-medium); }
+.banner .banner-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* ------------------------------------------------------------ P1 */
+.panel {
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-border-control);
+  border-radius: var(--radius-panel);
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+}
+.panel h3 { font-size: var(--text-lg); line-height: var(--leading-heading); margin: 0; }
+.panel .preview { padding: var(--space-3); background: var(--color-surface); border-radius: var(--radius-control); font-size: var(--text-sm); }
+.cancel-top { justify-self: start; }
+.panel-footer { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.panel-footer .cancel-bottom { display: none; }
+
+input[type="checkbox"] {
+  width: var(--target-min);
+  height: var(--target-min);
+  margin: 0;
+  flex: none;
+  accent-color: var(--color-action);
+}
+
+/* ------------------------------------------------------------ A1 */
+.drafts { width: 100%; border-collapse: collapse; }
+.drafts thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.drafts tr {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-3);
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-divider);
+  border-radius: var(--radius-panel);
+}
+.drafts td, .drafts th[scope="row"] { display: block; padding: 0; text-align: left; }
+.drafts th[scope="row"] { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text-secondary); }
+.drafts .when { font-family: var(--font-mono); font-size: var(--text-data); color: var(--color-text-secondary); }
+
+@media (min-width: 40rem) {
+  .drafts thead { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+  .drafts thead tr { background: none; border: 0; }
+  .drafts tr { display: table-row; padding: 0; margin: 0; border: 0; border-radius: 0; background: none; }
+  .drafts th, .drafts td, .drafts th[scope="row"] {
+    display: table-cell;
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
+    border-bottom: var(--border-hairline) solid var(--color-divider);
+    vertical-align: top;
+    text-align: left;
+  }
+  .drafts thead th { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text); }
+  .drafts th[scope="row"] { font-size: var(--text-md); color: var(--color-text); }
+  .cancel-top { display: none; }
+  .panel-footer .cancel-bottom { display: inline-flex; }
+}
+
+@media (min-width: 65rem) {
+  .only-narrow { display: none; }
+}
+
+/* ----------------------------------------------------- forced colours (US11) */
+/* System colours replace the author's: keep "nothing to do" without a rule, keep
+   the state icons visible on any palette, and keep a blocked button looking blocked. */
+@media (forced-colors: active) {
+  .rule-none { border-left-color: Canvas; }
+  .icon, .icon.i-octagon, .icon.i-x-circle { stroke: CanvasText; }
+  .btn .icon { stroke: currentColor; }
+  .btn[aria-disabled="true"] { color: GrayText; border-color: GrayText; }
+}

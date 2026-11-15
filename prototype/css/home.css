@@ -1,0 +1,322 @@
+/* Layout of the homepage (docs/4-design/screens-and-states.md § 2, design-system.md). Serif only in the
+   homepage headings (V1); Slate Teal only here, as an editorial accent (V8).
+   Values come only from tokens.css. The page tells one idea: a deal message can
+   look ready and not be (screens-and-states.md § 2). */
+
+.home-header,
+main#content,
+.home-footer {
+  max-width: calc(var(--measure) + var(--space-8) * 4);
+  margin: 0 auto;
+  padding-inline: var(--space-4);
+}
+
+main#content:focus { outline: none; }
+
+.home-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-4);
+  border-bottom: var(--border-hairline) solid var(--color-divider);
+}
+
+.hero {
+  display: grid;
+  gap: var(--space-5);
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.hero h1,
+.home-section h2 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-heading);
+  margin: 0;
+}
+.hero h1 { font-size: var(--text-display); max-width: 18ch; }
+.hero h1 { font-weight: var(--weight-regular); }
+.home-section h2 { font-size: var(--text-xl); font-weight: var(--weight-medium); text-wrap: balance; }
+
+.hero-text { display: grid; gap: var(--space-4); align-content: start; }
+.lede { font-size: var(--text-lg); max-width: var(--measure); }
+.cta { display: grid; gap: var(--space-2); justify-items: start; }
+
+/* ------------------------------------------------ the second look (UF45, UF46)
+   The draft of Project Harbor, as written and at a second look. Without the
+   script data-look stays "second": the findings are visible. In the written
+   state the notes are collapsed and hidden from assistive technology too, so a
+   screen reader hears what a sighted reader sees. */
+.second-look { display: grid; gap: var(--space-3); align-content: start; }
+.look-summary { font-weight: var(--weight-semibold); }
+.second-look[data-look="written"] .when-second,
+.second-look[data-look="second"] .when-written { display: none; }
+
+.draft {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-divider);
+  border-top: var(--rule-width) solid var(--color-mark);
+  border-radius: var(--radius-panel);
+}
+/* The draft and its button are one sheet of paper on the desk (V17). */
+.draft-sheet { display: grid; box-shadow: var(--shadow-raised); }
+/* Editorial captions in the serif italic: the proofreader's hand (V15). */
+.draft-caption,
+.card-step { font-family: var(--font-display); font-style: italic; font-size: var(--text-md); color: var(--color-text-secondary); }
+.draft-head {
+  display: grid;
+  gap: var(--space-1);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-hairline) solid var(--color-divider);
+}
+.draft-key { display: inline-block; min-width: var(--space-8); color: var(--color-text-secondary); }
+.draft-body { display: grid; gap: var(--space-2); }
+.mark-recipient { text-decoration: underline solid var(--color-rule-blocks) var(--underline-width); text-underline-offset: var(--space-1); }
+.note { padding-left: var(--space-3); font-size: var(--text-sm); }
+
+.note-slot {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--duration-reveal) ease-out, opacity var(--duration-reveal) ease-out;
+}
+.note-slot > * { overflow: hidden; min-height: 0; }
+.second-look[data-look="written"] .note-slot {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows var(--duration-reveal) ease-out, opacity var(--duration-reveal) ease-out, visibility 0s var(--duration-reveal);
+}
+.draft .flag-blocking,
+.draft .flag-warning,
+.draft .mark-recipient { transition: text-decoration-color var(--duration-reveal) ease-out; }
+.second-look[data-look="written"] .flag-blocking,
+.second-look[data-look="written"] .flag-warning,
+.second-look[data-look="written"] .mark-recipient { text-decoration-color: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .note-slot,
+  .second-look[data-look="written"] .note-slot,
+  .draft .flag-blocking, .draft .flag-warning, .draft .mark-recipient { transition: none; }
+}
+
+/* The button sits under the message, attached to it: read first, then look again. */
+.look-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-divider);
+  border-top: none;
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+}
+.look-bar[hidden] { display: none; }
+
+/* ------------------------------------------------------------ sections */
+.home-section {
+  display: grid;
+  gap: var(--space-3);
+  max-width: var(--measure);
+  padding-block: var(--space-6);
+  border-top: var(--border-hairline) solid var(--color-divider);
+}
+.home-section:focus { outline: none; }
+.section-body { display: grid; gap: var(--space-3); align-content: start; }
+.home-list { padding-left: 0; list-style-position: outside; display: grid; gap: var(--space-2); } /* bullets hang: the text keeps the column's edge (GA8) */
+
+/* What a second look finds: the weight of each finding in words and in the rule. */
+.findings { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.findings li { padding-left: var(--space-3); }
+
+/* ------------------------------------------------ cards → sheets (UF47)
+   A sequence, one under the other: three cards side by side would wrap each row
+   into a narrow column, and a horizontal strip would hide two of the three. */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); counter-reset: card; }
+.card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  color: inherit;
+  text-decoration: none;
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-divider);
+  border-radius: var(--radius-panel);
+}
+.card:hover { border-color: var(--color-action); }
+.card .recipient { background: var(--color-surface); padding-block: var(--space-2); }
+
+.cards li { counter-increment: card; }
+.card-step::before { content: counter(card) " · "; }
+.card-open { justify-self: end; color: var(--color-action); font-weight: var(--weight-semibold); text-decoration: underline; text-underline-offset: var(--space-1); }
+.card-open::after { content: " ↗" / ""; }
+
+.sheet {
+  border: none;
+  padding: 0;
+  width: min(40rem, calc(100vw - var(--space-4) * 2));
+  max-height: calc(100dvh - var(--space-6) * 2);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-raised);
+}
+.sheet::backdrop { background: var(--color-scrim); } /* the ink scrim, not pure black (RU6) */
+.sheet[open] { animation: sheet-rise var(--duration-reveal) ease-out; }
+@keyframes sheet-rise { from { transform: translateY(var(--space-4)); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .sheet[open] { animation: none; } }
+.sheet-inner { display: grid; gap: var(--space-4); padding: var(--space-5); }
+.sheet-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+.sheet-top .btn { flex: none; }
+.sheet h3 { min-width: 0; margin: 0; font-family: var(--font-display); font-size: var(--text-xl); line-height: var(--leading-heading); }
+.sheet h3:focus { outline: none; }
+.sheet dl { margin: 0; display: grid; gap: var(--space-3); }
+.sheet dt { font-weight: var(--weight-semibold); }
+.sheet dd { margin: 0; }
+.sheet-nav { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+/* ------------------------------------------- ready means this version (UF48)
+   Before and after an edit, both visible: the comparison is the content. Each row
+   is a link to its state (UF43); the arrow is the visible signifier. */
+.version-change { display: grid; gap: var(--space-2); }
+.change-note { font-size: var(--text-sm); color: var(--color-text-secondary); padding-left: var(--space-4); }
+.state-link { color: inherit; text-decoration: none; align-items: center; }
+.state-link .detail { flex: 1; }
+.state-link::after { content: "→" / ""; color: var(--color-action); font-weight: var(--weight-semibold); }
+.state-link:hover { box-shadow: inset 0 0 0 var(--border-hairline) var(--color-action); }
+.state-link:hover .detail { text-decoration: underline; text-underline-offset: var(--space-1); }
+
+/* ------------------------------------------------------------- footer */
+.home-footer {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-6) var(--space-8);
+  border-top: var(--border-hairline) solid var(--color-divider);
+}
+/* the smaller text is set on the content, so the footer keeps the page width (65ch) */
+.home-footer p, .home-footer ul { font-size: var(--text-sm); }
+.home-footer h2 { font-size: var(--text-md); font-weight: var(--weight-semibold); margin: 0; } /* not the browser's 700 (RU2) */
+.starting-points { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); }
+/* MB16 · rows to tap on a touch screen. */
+@media (pointer: coarse) { .starting-points a { min-height: var(--space-7); } }
+
+/* Wide screens (UF33): the page is as wide as a heading column plus the reading
+   measure, and each section puts its heading beside its text. */
+@media (min-width: 65rem) {
+  .home-header,
+  main#content,
+  .home-footer {
+    max-width: calc(var(--measure) + var(--space-8) * 5 + var(--space-4) * 2);
+  }
+  .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; }
+  .home-section {
+    grid-template-columns: calc(var(--space-8) * 4) minmax(0, var(--measure));
+    column-gap: var(--space-8);
+    max-width: none;
+  }
+  .home-section > h2 { grid-column: 1; }
+  .home-section > .section-body { grid-column: 2; }
+}
+
+/* ------------------------------------------------------------ brand pass (UR6)
+   The page reads as an edited document: a white band for the hero, where the
+   draft sits on the desk; numbered sections whose headings stay in view beside
+   their text; the limits set apart, as a note that matters; and a closing band
+   in ink, the colour of the bar under every draft in the sample review. */
+/* GA14 · the hero is the app's desk: the same toned page, lit from above, across
+   the whole width, and the draft laid on it as a sheet, as in the sample review. */
+.hero {
+  border-image: linear-gradient(180deg, var(--color-env-top) 0%, var(--color-env-bottom) 100%) fill 0 / / 0 100vmax;
+  padding-block: var(--space-7) var(--space-8);
+}
+/* RU1 · the hero's title steps through the type scale (36 · 48 · 60) instead of a fluid
+   clamp, which gave 40.58 px on a phone; large type shrinks faster than body text. */
+.hero h1 { font-size: var(--text-display); line-height: 1.08; letter-spacing: -0.01em; }
+@media (min-width: 40rem) { .hero h1 { font-size: var(--text-hero-md); } }
+@media (min-width: 65rem) { .hero h1 { font-size: var(--text-hero-lg); } }
+.hero .draft { background: var(--color-surface-raised); }
+.hero .draft-sheet { box-shadow: var(--edge-paper), var(--shadow-draft); }
+/* GA12 · the homepage opens with the app's bar: the whole width, the wordmark on a
+   24px edge, the call to action at the right, 56px tall, the page's tone and the
+   same rule under it. Homepage and sample review start the same way. */
+.home-header {
+  max-width: none;
+  margin: 0;
+  min-height: calc(var(--control-height) + var(--space-2) * 2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-env-top);
+  border-bottom: var(--border-hairline) solid var(--color-divider-page);
+}
+.home-header .wordmark { font-size: var(--text-lg); line-height: 1; }
+@media (min-width: 65rem) {
+  .home-header { max-width: none; padding-inline: var(--space-5); }
+}
+
+main#content { counter-reset: section; }
+.home-section { counter-increment: section; padding-block: var(--space-7); }
+.home-section > h2::before {
+  content: counter(section, decimal-leading-zero) / "";
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+  letter-spacing: 0.04em;
+  color: var(--color-mark);
+}
+#finds { border-top: 0; }
+
+/* The limits: a ruled note, not a footnote. */
+#limits .section-body {
+  padding: var(--space-5);
+  background: var(--color-surface-raised);
+  border: var(--border-hairline) solid var(--color-divider);
+  border-top: var(--rule-width) solid var(--color-text);
+}
+
+/* The invitation: a band in ink, like the bar under each draft. */
+.home-section.home-cta {
+  border-top: 0;
+  color: var(--color-on-bar);
+  background: var(--color-bar);
+  box-shadow: 0 0 0 100vmax var(--color-bar);
+  clip-path: inset(0 -100vmax);
+  margin-top: var(--space-6);
+}
+.home-cta > h2::before { color: var(--color-on-bar-secondary); }
+.home-cta .meta { color: var(--color-on-bar-secondary); }
+.home-cta .btn-primary { background: var(--color-on-bar); border-color: var(--color-on-bar); color: var(--color-bar); }
+.home-cta :focus-visible { outline-color: var(--color-focus-on-bar); }
+.home-cta + * , .home-footer { border-top: 0; }
+
+@media (min-width: 65rem) {
+  .home-section > h2 { position: sticky; top: var(--space-5); align-self: start; }
+  .home-section.home-cta > h2 { position: static; }
+  .home-section > h2 { font-size: var(--text-2xl); }
+}
+@media (min-width: 40rem) {
+  .starting-points { display: block; columns: 2; column-gap: var(--space-6); }
+  .starting-points li { break-inside: avoid; margin-bottom: var(--space-1); }
+}
+
+/* GA8 · the footer on the sections' grid: the title in the heading column, the
+   starting points in the text column (543 px), not on a line of their own. */
+@media (min-width: 65rem) {
+  .home-footer {
+    grid-template-columns: calc(var(--space-8) * 4) minmax(0, var(--measure));
+    grid-template-areas: "title list" "note list";
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-8);
+    align-content: start;
+  }
+  .home-footer > h2 { grid-area: title; }
+  .home-footer > p { grid-area: note; align-self: start; color: var(--color-text-secondary); }
+  .home-footer > .starting-points { grid-area: list; }
+}
+.recipient.rule-blocks.is-waiting { border-left-color: var(--color-rule-waiting); }
+
+/* A11Y3 · a link that stands alone in its paragraph is a 24 px target (WCAG 2.5.8) */
+.section-body > p > a:only-child { display: inline-block; padding-block: var(--space-1) 0; }

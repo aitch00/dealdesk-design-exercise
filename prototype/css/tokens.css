@@ -1,0 +1,320 @@
+/*
+ * DealDesk design tokens: the only source of visual values for the prototype.
+ *
+ * Every value names its source: the brand's visual identity,
+ * docs/3-brand/visual-identity.md ("brand/08"), a WCAG 2.2 criterion, a decision ID in
+ * docs/decisions.md, or [ASSUMPTION] (to be confirmed). docs/4-design/design-system.md explains how the
+ * tokens are used; it cites token names and does not repeat values.
+ *
+ * Contrast pairs are declared next to the tokens as structured comments:
+ *   @contrast <kind> <foreground-token> on <background-token>
+ * kind = text (4.5:1) | large-text (3:1) | ui | focus | icon (3:1, WCAG 1.4.11).
+ * scripts/check_contrast.py reads them and writes docs/4-design/contrast.md.
+ * Colours are 6-digit hex or var() aliases only, so the script can resolve every pair.
+ *
+ * Breakpoints cannot be used inside @media (custom properties are not allowed there).
+ * Media queries repeat the --bp-* values literally, min-width only (mobile first);
+ * scripts/check_contrast.py fails if a media query uses any other width.
+ */
+
+/* ------------------------------------------------------------------ fonts */
+/* Self-hosted latin subsets with their OFL licences in ../fonts/ (no third-party requests). */
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/atkinson-hyperlegible-next-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/newsreader-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../fonts/newsreader-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/newsreader-latin-400-italic.woff2") format("woff2");
+}
+
+:root {
+  /* ------------------------------------------------------- colour: primitives */
+  /* Warm greys, one ramp (CL3): every grey of the interface is a step of it.
+     Hue ~30-45, saturation rising towards both ends so the extremes stay warm. */
+  --grey-50: #F9F8F5;        /* hsl(45 25% 97%) · the Review notes sheet (DP2) */
+  --grey-100: #F5F4F1;       /* hsl(45 17% 95%) · Paper */
+  --grey-200: #EFEDE8;       /* hsl(43 18% 92%) · the page under the sheets, top */
+  --grey-300: #DDD8CF;       /* hsl(39 17% 84%) · the page, bottom; decorative dividers on white */
+  --grey-400: #C5BDB1;       /* hsl(36 15% 73%) · dividers on the page (bar, footer) */
+  --grey-500: #8E867B;       /* hsl(35 8% 52%) · large text and decoration only (3.6:1 on white) */
+  --grey-600: #5A544D;       /* hsl(32 8% 33%) · Graphite: secondary text */
+  --grey-700: #433E38;       /* hsl(33 9% 24%) */
+  --grey-800: #2F2B27;       /* hsl(30 9% 17%) */
+  --grey-900: #221F1B;       /* hsl(34 11% 12%) · Ink: text */
+
+  --ink: var(--grey-900);           /* brand/08 Ink: text, wordmark (V13) */
+  --paper: var(--grey-100);         /* brand/08 Paper: backgrounds; neutral, not cream (R8) (V13) */
+  --graphite: var(--grey-600);      /* brand/08 Graphite: secondary text (V13) */
+  --haze-light: var(--grey-200);    /* (DP2) */
+  --haze: var(--grey-300);          /* (DP2) */
+  --notes-paper: var(--grey-50);    /* (DP2) */
+  --stone: var(--grey-300);         /* decorative dividers only, never a control boundary (WCAG 1.4.11 does not apply) */
+  --sepia: #7A4520;          /* hsl(25 58% 30%) · brand/08 Sepia ink: actions, links, focus, the caret mark; never a state (V13) */
+  --white: #FFFFFF;          /* raised surfaces: the draft, the sheets */
+  --highlight: #EFE6D2;      /* proofreader's highlight: the selected sentence and recipient (UR2, CL4) */
+
+  /* State colours (CL1): two, each with one meaning, always next to a word, an icon
+     shape and a rule style (WCAG 1.4.1). Dark and quiet, nothing like an alarm. */
+  --red-100: #F9EBEC;        /* hsl(356 55% 95%) · tint behind "the message must change" */
+  --red-600: #9B3138;        /* hsl(356 52% 40%) · carmine, away from the sepia of actions (25°): rules, icons, underlines */
+  --red-700: #7E242A;        /* hsl(356 56% 32%) · secondary text on the tint: a red, never grey (RU3) */
+  --red-800: #691C21;        /* hsl(356 58% 26%) · text on the tint */
+  --green-100: #E8F3EB;      /* hsl(140 30% 93%) · tint behind "it can go" */
+  --green-600: #2E664A;      /* hsl(150 38% 29%) · forest, not lime or teal (R8): icon, rule */
+  --green-700: #22543B;      /* hsl(151 42% 23%) · secondary text on the tint (RU3) */
+  --green-800: #19432F;      /* hsl(152 45% 18%) · text on the tint */
+  /* The simulation (CL2): a yellow legal-pad note laid on the desk, never the product. */
+  --legal-pad: #FDF3C4;      /* hsl(50 92% 88%) */
+  --legal-pad-edge: #E2CE8D; /* hsl(46 60% 72%) · its edge, decorative */
+  --legal-pad-ink: #5F461C;  /* hsl(38 55% 24%) · secondary text on it: a brown of its hue, never grey */
+
+  /* ------------------------------------------------------------ colour: roles */
+  --color-surface: var(--paper);
+  --color-surface-raised: var(--white);
+  --color-text: var(--ink);
+  --color-text-secondary: var(--graphite);
+  --color-on-action: var(--white);
+  --color-action: var(--sepia);            /* actions, links and focus only; never a state */
+  --color-focus: var(--sepia);             /* two-colour ring: outline plus offset gap (WCAG C40) */
+  --color-mark: var(--sepia);              /* the caret mark and homepage editorial rules; never a state (V14) */
+  --color-border-control: var(--graphite); /* boundary that identifies a field or outline button */
+  --color-divider: var(--stone);
+  --color-divider-page: var(--grey-400);   /* the rules under the bar and over the footer, on the page (CL5) */
+  --color-highlight: var(--highlight);     /* selection in the draft, not a state (UR2) */
+
+  /* States: word, icon shape and rule style carry them; colour is a second signal
+     (CL1, WCAG 1.4.1). Red only where the message must change before it can go,
+     green only in the verdict when it can go; everything else stays ink and graphite. */
+  --color-state-icon: var(--ink);
+  --color-rule-blocks: var(--red-600);     /* solid rule and underline: change this before sending */
+  --color-rule-waiting: var(--ink);        /* solid rule: sending waits, nothing to change (CL1) */
+  --color-rule-warning: var(--graphite);   /* dashed rule: check, sending allowed */
+  --color-state-blocks: var(--red-600);
+  --color-state-blocks-text: var(--red-800);
+  --color-state-blocks-tint: var(--red-100);
+  --color-state-blocks-secondary: var(--red-700);
+  --color-state-ready: var(--green-600);
+  --color-state-ready-text: var(--green-800);
+  --color-state-ready-tint: var(--green-100);
+  --color-state-ready-secondary: var(--green-700);
+  --color-simulation: var(--legal-pad);    /* everything that belongs to the demo (CL2) */
+  --color-simulation-edge: var(--legal-pad-edge);
+  --color-on-simulation-secondary: var(--legal-pad-ink);
+  /* The bar under the draft: ink with paper-white text, as in the reference boards (TC12). */
+  --color-bar: var(--ink);
+  --color-on-bar: var(--white);
+  --color-on-bar-secondary: var(--stone);
+  --color-focus-on-bar: var(--white);      /* the sepia ring would not show on ink */
+  --color-scrim: rgb(34 31 27 / 0.55);      /* the page behind a view in the foreground (TC7, TC8); narrow and medium screens */
+  /* Depth on wide screens (DP1–DP6): lighter is closer. The page, the notes, the draft. */
+  --color-env-top: var(--haze-light);
+  --color-env-bottom: var(--haze);
+  --color-surface-notes: var(--notes-paper);
+  --color-veil: rgb(34 31 27 / 0.12);       /* every plane under a sheet laid on the draft (DP4) */
+
+  /* @contrast text --color-text on --color-surface */
+  /* @contrast text --color-text on --color-surface-raised */
+  /* @contrast text --color-text-secondary on --color-surface */
+  /* @contrast text --color-text-secondary on --color-surface-raised */
+  /* @contrast text --color-text on --color-highlight */
+  /* @contrast text --color-action on --color-highlight */
+  /* @contrast text --color-on-action on --color-action */
+  /* @contrast text --color-action on --color-surface */
+  /* @contrast text --color-action on --color-surface-raised */
+  /* @contrast ui --color-mark on --color-surface */
+  /* @contrast ui --color-mark on --color-surface-raised */
+  /* @contrast ui --color-action on --color-surface */
+  /* @contrast ui --color-border-control on --color-surface */
+  /* @contrast ui --color-border-control on --color-surface-raised */
+  /* @contrast ui --color-rule-blocks on --color-surface */
+  /* @contrast ui --color-rule-blocks on --color-surface-raised */
+  /* @contrast ui --color-rule-warning on --color-surface */
+  /* @contrast ui --color-rule-warning on --color-surface-raised */
+  /* @contrast focus --color-focus on --color-surface */
+  /* @contrast focus --color-focus on --color-surface-raised */
+  /* @contrast icon --color-state-icon on --color-surface */
+  /* @contrast icon --color-state-icon on --color-surface-raised */
+  /* @contrast text --color-on-bar on --color-bar */
+  /* @contrast text --color-on-bar-secondary on --color-bar */
+  /* @contrast text --color-bar on --color-on-bar */
+  /* @contrast ui --color-on-bar-secondary on --color-bar */
+  /* @contrast focus --color-focus-on-bar on --color-bar */
+  /* @contrast ui --color-rule-blocks on --color-highlight */
+  /* @contrast ui --color-rule-waiting on --color-surface-raised */
+  /* @contrast icon --color-state-blocks on --color-surface-raised */
+  /* @contrast icon --color-state-blocks on --color-surface-notes */
+  /* @contrast icon --color-state-blocks on --color-env-bottom */
+  /* @contrast icon --color-state-blocks on --color-state-blocks-tint */
+  /* @contrast text --color-state-blocks-text on --color-state-blocks-tint */
+  /* @contrast text --color-text on --color-state-blocks-tint */
+  /* @contrast text --color-text-secondary on --color-state-blocks-tint */
+  /* @contrast text --color-state-blocks-secondary on --color-state-blocks-tint */
+  /* @contrast text --color-state-ready-secondary on --color-state-ready-tint */
+  /* @contrast ui --color-state-blocks on --color-state-blocks-tint */
+  /* @contrast icon --color-state-ready on --color-state-ready-tint */
+  /* @contrast text --color-state-ready-text on --color-state-ready-tint */
+  /* @contrast text --color-text on --color-state-ready-tint */
+  /* @contrast text --color-text-secondary on --color-state-ready-tint */
+  /* @contrast ui --color-state-ready on --color-state-ready-tint */
+  /* @contrast text --color-text on --color-simulation */
+  /* @contrast text --color-on-simulation-secondary on --color-simulation */
+  /* @contrast text --color-action on --color-simulation */
+  /* @contrast text --color-on-action on --color-action */
+  /* @contrast ui --color-border-control on --color-simulation */
+  /* @contrast focus --color-focus on --color-simulation */
+  /* @contrast text --color-text on --color-env-bottom */
+  /* @contrast text --color-text-secondary on --color-env-bottom */
+  /* @contrast text --color-text on --color-surface-notes */
+  /* @contrast text --color-text-secondary on --color-surface-notes */
+  /* @contrast text --color-action on --color-surface-notes */
+  /* @contrast ui --color-border-control on --color-surface-notes */
+  /* @contrast ui --color-rule-blocks on --color-surface-notes */
+  /* @contrast ui --color-rule-warning on --color-surface-notes */
+  /* @contrast icon --color-state-icon on --color-env-bottom */
+  /* @contrast icon --color-state-icon on --color-surface-notes */
+  /* @contrast focus --color-focus on --color-env-bottom */
+  /* @contrast focus --color-focus on --color-surface-notes */
+
+  /* ------------------------------------------------------------- typography */
+  /* Sans for interface and text, serif for the wordmark and homepage headings, mono for data (V15). */
+  --font-sans: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+
+  /* Scale: hand-picked whole pixel values (12 14 16 20 24 30 36), rem only (UG1).
+     It replaces the 1.2 ratio, whose steps (19.2, 23.04, 27.65, 39.8 px) rounded
+     differently in each browser and sat too close together to tell apart. */
+  --text-xs: 0.75rem;        /* 12 · small caps labels, times in the list */
+  --text-sm: 0.875rem;       /* 14 · metadata, state words */
+  --text-md: 1rem;           /* 16 · body and interface */
+  --text-lg: 1.25rem;        /* 20 · panel headings, wordmark in the app bar */
+  --text-xl: 1.5rem;         /* 24 · draft subject, list title */
+  --text-2xl: 1.875rem;      /* 30 · homepage section headings on wide screens */
+  --text-display: 2.25rem;   /* 36 · homepage headings, serif; the hero's title on a phone */
+  --text-hero-md: 3rem;      /* 48 · the hero's title from 40rem (RU1) */
+  --text-hero-lg: 3.75rem;   /* 60 · the hero's title from 65rem (RU1) */
+
+  --text-data: var(--text-sm); /* mono data: one step under the sans beside it, for Plex Mono's wider set (UG1; was 0.9375em, which compounded) */
+
+  --weight-regular: 400;
+  --weight-medium: 500;      /* wordmark (V14), labels, homepage section headings */
+  --weight-semibold: 600;    /* headings, state words */
+
+  --leading-body: 1.5;       /* [ASSUMPTION] */
+  --leading-heading: 1.25;   /* [ASSUMPTION] */
+  --measure: 34em;           /* main reading column: about 70 characters per line (RU5); in ch, Atkinson's wide zero gave 79 */
+
+  /* -------------------------------------------------------------- spacing */
+  /* 4px base [ASSUMPTION] */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* ------------------------------------------------------ borders and radii */
+  --border-hairline: 1px;          /* dividers, control boundaries */
+  --rule-width: 0.25rem;           /* state rule on the left of a row or sentence */
+  --underline-width: 0.125rem;     /* flagged sentence: solid = Blocking, dashed = Warning (state-to-ui.md:42-43) */
+  --focus-width: 0.1875rem;        /* WCAG 2.4.7, C40 */
+  --focus-offset: 0.125rem;
+  --radius-control: 0;             /* square corners: paper, not app chrome (V16) */
+  --radius-panel: 0;               /* (V16) */
+
+  /* --------------------------------------------------------------- depth */
+  /* A sheet on the desk: a tight shadow for the edge, a soft one for the lift (V17).
+     Only the draft on the homepage and the sheets; nothing else floats. */
+  --shadow-raised: 0 1px 1px rgb(34 31 27 / 0.10), 0 8px 24px rgb(34 31 27 / 0.08);
+  /* The app on wide screens: three planes and the sheets laid on the draft (DP1–DP6).
+     One light, above the page, so shadows fall straight down, each in two parts: a
+     tight contact shadow that fades as the plane rises, a cast shadow that grows. */
+  --edge-paper: 0 0 0 1px var(--stone);                                          /* a sheet's edge */
+  --shadow-notes: 0 1px 2px rgb(34 31 27 / 0.08), 0 2px 6px rgb(34 31 27 / 0.04);  /* plane 1 */
+  --shadow-draft: 0 1px 2px rgb(34 31 27 / 0.08), 0 10px 28px rgb(34 31 27 / 0.12); /* plane 2 */
+  --shadow-sheet: 0 2px 4px rgb(34 31 27 / 0.04), 0 22px 56px rgb(34 31 27 / 0.22); /* plane 3 */
+  --shadow-lift: 0 30px 72px rgb(34 31 27 / 0.24);                                /* the draft risen for the final review */
+  --sheet-offset: 0.75rem;   /* a sheet laid on the draft shows the draft's top left (DP4) */
+  --sheet-lift: 0.25rem;     /* how far the draft rises for the final review (DP5) */
+
+  /* ----------------------------------------------------------------- icons */
+  /* Linear, uniform stroke, round caps (brand/08 Iconography); one shape per state. */
+  --icon-size: 1.5rem;
+  --icon-size-sm: 1.25rem;         /* 20 · state icons in the drafts list, beside 16px text (UG3) */
+  --icon-stroke: 1.75;             /* stroke width in the 24-unit icon grid [ASSUMPTION] */
+
+  /* --------------------------------------------------------------- targets */
+  --target-min: 1.5rem;            /* 24 CSS px, WCAG 2.5.8 */
+  --control-height: 2.5rem;        /* comfortable button height [ASSUMPTION] */
+
+  /* ----------------------------------------------------------- breakpoints */
+  --bp-narrow: 40rem;  /* A1 table becomes cards, P1 full screen, banner wraps */
+  --bp-wide: 65rem;    /* three columns: list · draft · Review notes (TC1) */
+
+  /* ---------------------------------------------------------------- motion */
+  --duration-spin: 1s;             /* "Checking…" indicator; stopped under prefers-reduced-motion */
+  --duration-reveal: 180ms;
+  --duration-sheet-in: 280ms;      /* a sheet arrives from below (DP6) */
+  --duration-sheet-out: 200ms;     /* and leaves: upwards when sent, downwards when cancelled */
+  --ease-sheet-in: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-sheet-out: cubic-bezier(0.4, 0, 1, 1);        /* the second look and the sheets (UF46, UF47); none under prefers-reduced-motion */
+}

@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DealDesk Design Process</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="The design process of the DealDesk homepage and sample message review, in eight steps.">
+<style>
+/* Layout concept: the process laid out on DealDesk's own desk. The page is the
+   desk; each step of the process is a sheet of paper on it, with square corners and
+   the product's shadows. Anything simulated or assumed sits on the legal-pad
+   yellow the sample review uses for its simulation; red and green appear only
+   where real product states are shown. One light theme, on purpose: paper. */
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-weight: 400; font-display: swap; src: url("fonts/atkinson-hyperlegible-next-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-weight: 600; font-display: swap; src: url("fonts/atkinson-hyperlegible-next-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url("fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Newsreader"; font-weight: 400; font-display: swap; src: url("fonts/newsreader-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Newsreader"; font-weight: 500; font-display: swap; src: url("fonts/newsreader-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Newsreader"; font-style: italic; font-weight: 400; font-display: swap; src: url("fonts/newsreader-latin-400-italic.woff2") format("woff2"); }
+
+:root {
+  color-scheme: light;
+  /* colour: the product's own tokens (prototype/css/tokens.css) */
+  --ink: #221F1B;
+  --graphite: #5A544D;
+  --paper: #F5F4F1;
+  --sheet: #FFFFFF;
+  --desk-top: #EFEDE8;
+  --desk: #DDD8CF;
+  --rule: #DDD8CF;
+  --rule-strong: #C5BDB1;
+  --sepia: #7A4520;
+  --highlight: #EFE6D2;
+  --red: #9B3138;
+  --red-tint: #F9EBEC;
+  --red-ink: #691C21;
+  --green: #2E664A;
+  --green-tint: #E8F3EB;
+  --green-ink: #19432F;
+  --pad: #FDF3C4;
+  --pad-edge: #E2CE8D;
+  --pad-ink: #5F461C;
+  --bar: #221F1B;
+  --on-bar: #FFFFFF;
+  /* type */
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --t-xs: 0.75rem; --t-sm: 0.875rem; --t-md: 1rem; --t-lg: 1.25rem; --t-xl: 1.5rem; --t-2xl: 1.875rem; --t-3xl: 2.25rem; --t-hero: 3rem;
+  /* space and depth */
+  --s1: 0.25rem; --s2: 0.5rem; --s3: 0.75rem; --s4: 1rem; --s5: 1.5rem; --s6: 2rem; --s7: 3rem; --s8: 4rem;
+  --edge: 0 0 0 1px var(--rule);
+  --shadow-sheet: 0 1px 2px rgb(34 31 27 / 0.08), 0 10px 28px rgb(34 31 27 / 0.10);
+  --measure: 34em;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--s5); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--desk-top);
+  font: 400 var(--t-md)/1.55 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+p, ul, ol, figure, h1, h2, h3, h4, table { margin: 0; }
+img { max-width: 100%; display: block; }
+a { color: var(--sepia); text-underline-offset: 0.2em; }
+:focus-visible { outline: 3px solid var(--sepia); outline-offset: 2px; }
+strong { font-weight: 600; }
+.mono { font-family: var(--mono); font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+.muted { color: var(--graphite); }
+.skip { position: absolute; left: var(--s4); top: var(--s2); background: var(--sheet); padding: var(--s2) var(--s3); transform: translateY(-200%); z-index: 5; }
+.skip:focus { transform: none; }
+
+/* ------------------------------------------------------------ frame */
+.page { max-width: 76rem; margin: 0 auto; padding-block: var(--s6) var(--s8); display: grid; gap: var(--s6); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 65rem) { .page { grid-template-columns: 13rem minmax(0, 1fr); column-gap: var(--s6); } }
+
+.top { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2) var(--s4); padding-bottom: var(--s4); border-bottom: 1px solid var(--rule-strong); }
+.wordmark { font-family: var(--display); font-weight: 500; font-size: var(--t-lg); }
+.top .crumb { color: var(--graphite); font-size: var(--t-sm); }
+.top .links { margin-left: auto; display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); font-size: var(--t-sm); }
+
+/* index */
+.index { display: none; }
+@media (min-width: 65rem) {
+  .index { display: block; position: sticky; top: var(--s5); align-self: start; }
+  .index ol { list-style: none; padding: 0; display: grid; gap: 2px; }
+  .index a { display: grid; grid-template-columns: 1.75rem 1fr; gap: var(--s2); padding: var(--s1) var(--s2); color: var(--ink); text-decoration: none; font-size: var(--t-sm); border-left: 3px solid transparent; }
+  .index a:hover { background: rgb(255 255 255 / 0.5); }
+  .index a[aria-current="true"] { border-left-color: var(--sepia); background: var(--sheet); }
+  .index .n { font-family: var(--mono); color: var(--graphite); }
+  .index .label { margin: var(--s4) 0 var(--s2) var(--s2); font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); }
+}
+
+.flow { display: grid; gap: var(--s6); min-width: 0; }
+
+/* ------------------------------------------------------------ sheets */
+.sheet { background: var(--sheet); box-shadow: var(--edge), var(--shadow-sheet); padding: var(--s6) var(--s5); display: grid; gap: var(--s5); min-width: 0; }
+@media (min-width: 40rem) { .sheet { padding: var(--s7) var(--s7); } }
+.sheet > * { min-width: 0; }
+.eyebrow { display: flex; gap: var(--s3); align-items: baseline; font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); }
+.eyebrow .num { font-family: var(--mono); font-weight: 400; letter-spacing: 0; color: var(--sepia); font-size: var(--t-sm); text-transform: none; }
+h1, h2 { font-family: var(--display); font-weight: 400; line-height: 1.12; text-wrap: balance; }
+h1 { font-size: var(--t-3xl); }
+@media (min-width: 40rem) { h1 { font-size: var(--t-hero); } }
+h2 { font-size: var(--t-2xl); }
+@media (min-width: 40rem) { h2 { font-size: var(--t-3xl); } }
+h3 { font-size: var(--t-md); font-weight: 600; }
+.lede { font-size: var(--t-lg); line-height: 1.5; max-width: 38em; }
+.prose { display: grid; gap: var(--s3); max-width: var(--measure); }
+.prose ul, .prose ol { padding-left: 1.25em; display: grid; gap: var(--s1); }
+.cols { display: grid; gap: var(--s5); }
+@media (min-width: 52rem) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cols.three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.block { display: grid; gap: var(--s2); align-content: start; }
+
+/* the legal pad: what is simulated, assumed or still open */
+.pad { background: var(--pad); box-shadow: 0 0 0 1px var(--pad-edge); padding: var(--s4) var(--s5); display: grid; gap: var(--s2); max-width: 46em; }
+.pad .pad-title { font-weight: 600; }
+.pad p, .pad li { color: var(--pad-ink); }
+.pad ul { padding-left: 1.25em; display: grid; gap: var(--s1); }
+.pad strong { color: var(--ink); }
+
+/* tables */
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: var(--t-sm); }
+th, td { text-align: left; vertical-align: top; padding: var(--s2) var(--s3) var(--s2) 0; border-bottom: 1px solid var(--rule); }
+th { font-weight: 600; color: var(--graphite); font-size: var(--t-xs); letter-spacing: 0.06em; text-transform: uppercase; }
+td:first-child { font-weight: 600; }
+
+/* figures */
+figure { display: grid; gap: var(--s2); }
+figcaption { font-size: var(--t-sm); color: var(--graphite); max-width: 46em; }
+.shot { padding: 0; border: 0; background: none; cursor: zoom-in; display: block; width: 100%; box-shadow: var(--edge), 0 6px 18px rgb(34 31 27 / 0.10); }
+.shot img { width: 100%; height: auto; }
+.phone { max-width: 15rem; }
+
+/* ------------------------------------------------------------ the thesis: two lanes */
+.lanes { display: grid; gap: var(--s3); }
+.lane { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s2); }
+@media (min-width: 52rem) { .lane { grid-template-columns: 9rem minmax(0, 1fr); align-items: center; } }
+.lane-name { font-size: var(--t-sm); font-weight: 600; }
+.lane-name span { display: block; font-weight: 400; color: var(--graphite); }
+.track { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); min-height: 2.75rem; background: var(--paper); box-shadow: inset 0 0 0 1px var(--rule); }
+.rules-bar { grid-column: 1 / -1; margin: var(--s2); background: var(--ink); color: var(--on-bar); font-size: var(--t-sm); display: flex; align-items: center; padding: 0 var(--s3); }
+.round { margin: var(--s2) 3px; background: var(--sheet); box-shadow: 0 0 0 1px var(--rule-strong); font-size: var(--t-xs); padding: var(--s1) var(--s2); line-height: 1.3; display: grid; align-content: center; }
+.round.quiet { background: none; box-shadow: inset 0 0 0 1px var(--rule-strong); box-shadow: none; outline: 1px dashed var(--rule-strong); outline-offset: -1px; color: var(--graphite); }
+.round .d { display: none; font-style: normal; font-family: var(--mono); color: var(--graphite); }
+@media (max-width: 52rem) {
+  .lanes .days { display: none; }
+  .track { grid-template-columns: minmax(0, 1fr); padding-block: var(--s1); }
+  .rules-bar { min-height: 2.5rem; }
+  .round { margin: 2px var(--s2); display: block; }
+  .round .d { display: inline-block; min-width: 3.75rem; }
+  .round small { display: inline; color: var(--graphite); }
+}
+.round b { font-family: var(--mono); font-weight: 400; color: var(--sepia); }
+.days { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); font-family: var(--mono); font-size: var(--t-xs); color: var(--graphite); }
+@media (min-width: 52rem) { .days { margin-left: calc(9rem + var(--s2)); } }
+
+/* ------------------------------------------------------------ the chain */
+.chain { list-style: none; padding: 0; display: grid; gap: var(--s2); }
+@media (min-width: 52rem) { .chain { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; } }
+.chain li { background: var(--paper); box-shadow: inset 0 0 0 1px var(--rule); padding: var(--s3); display: grid; gap: var(--s1); font-size: var(--t-sm); position: relative; }
+.chain li b { font-family: var(--display); font-size: var(--t-lg); font-weight: 500; }
+@media (min-width: 52rem) {
+  .chain li + li { margin-left: var(--s4); }
+  .chain li + li::before { content: "\2192" / ""; position: absolute; left: calc(-1 * var(--s4)); top: 50%; width: var(--s4); text-align: center; transform: translateY(-50%); color: var(--sepia); }
+}
+.steps { counter-reset: step; list-style: none; padding: 0; display: grid; gap: var(--s2); }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 1.75rem 1fr; gap: var(--s2); }
+.steps li::before { content: counter(step); font-family: var(--mono); color: var(--sepia); }
+
+/* ------------------------------------------------------------ options (alternatives) */
+.decision { display: grid; gap: var(--s3); padding-top: var(--s5); border-top: 1px solid var(--rule); }
+.decision .id { font-family: var(--mono); font-size: var(--t-sm); color: var(--graphite); }
+.verdicts { display: grid; gap: var(--s2); }
+@media (min-width: 52rem) { .verdicts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.verdict { padding: var(--s3) var(--s4); font-size: var(--t-sm); display: grid; gap: var(--s1); background: var(--paper); box-shadow: inset 0 0 0 1px var(--rule); }
+.verdict .tag { font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); }
+.verdict.chosen { background: var(--sheet); box-shadow: inset 0 0 0 2px var(--ink); }
+.verdict.chosen .tag { color: var(--ink); }
+.seg { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.seg button {
+  font: 600 var(--t-sm)/1.2 var(--sans); color: var(--ink); background: var(--sheet);
+  border: 1px solid var(--graphite); padding: var(--s2) var(--s3); min-height: 2.5rem; cursor: pointer; text-align: left;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--on-bar); border-color: var(--ink); }
+.seg button .why { display: block; font-weight: 400; font-size: var(--t-xs); }
+.option-note { font-size: var(--t-sm); max-width: 46em; }
+.option-note .tag { font-weight: 600; }
+.is-rejected { color: var(--graphite); }
+
+/* compare slider */
+.compare { position: relative; overflow: hidden; box-shadow: var(--edge), 0 6px 18px rgb(34 31 27 / 0.10); background: var(--sheet); }
+.compare img { width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.compare .after { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--pos, 50%)); }
+.compare .after img { height: 100%; object-fit: cover; object-position: left top; }
+.compare .handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 2px; background: var(--sepia); transform: translateX(-1px); pointer-events: none; }
+.compare .handle::after { content: "\2194" / ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--sepia); color: #fff; width: 2.25rem; height: 2.25rem; display: grid; place-items: center; font-size: var(--t-lg); }
+.compare .tagl, .compare .tagr { position: absolute; top: var(--s2); background: var(--ink); color: var(--on-bar); font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px var(--s2); }
+.compare .tagl { left: var(--s2); } .compare .tagr { right: var(--s2); }
+.compare-control { display: flex; align-items: center; gap: var(--s3); font-size: var(--t-sm); }
+.compare-control input { flex: 1; accent-color: var(--sepia); min-height: 1.5rem; }
+
+/* ------------------------------------------------------------ state table */
+.state-row { display: inline-flex; align-items: center; gap: var(--s2); padding: var(--s1) var(--s3); border-left: 4px solid; background: var(--sheet); font-size: var(--t-sm); box-shadow: inset 0 0 0 1px var(--rule); }
+.st-blocking { border-left-color: var(--red); }
+.st-warning { border-left: 4px dashed var(--graphite); }
+.st-pending { border-left-color: var(--ink); }
+.st-ready { border-left-color: var(--green); background: var(--green-tint); color: var(--green-ink); }
+.ico { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.st-blocking .ico { stroke: var(--red); }
+.swatch { display: inline-block; width: 0.9em; height: 0.9em; vertical-align: -0.1em; margin-right: var(--s1); box-shadow: 0 0 0 1px rgb(0 0 0 / 0.15); }
+
+/* ------------------------------------------------------------ numbers */
+.figures { display: grid; gap: var(--s3); grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+.figure { padding: var(--s3) var(--s4); box-shadow: inset 0 0 0 1px var(--rule); display: grid; gap: var(--s1); }
+.figure .big { font-family: var(--display); font-size: var(--t-2xl); line-height: 1; }
+.figure .what { font-size: var(--t-sm); color: var(--graphite); }
+.bars { display: grid; gap: var(--s3); max-width: 40em; }
+.bar-row { display: grid; grid-template-columns: 8rem minmax(0, 1fr) 4.5rem; gap: var(--s3); align-items: center; font-size: var(--t-sm); }
+.pair { display: grid; gap: 3px; }
+.bar-track { height: 0.625rem; background: var(--paper); box-shadow: inset 0 0 0 1px var(--rule); position: relative; }
+.bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+.bar-fill.before { background: var(--rule-strong); }
+
+/* ------------------------------------------------------------ stepper and gallery */
+.stepper { display: grid; gap: var(--s4); }
+@media (min-width: 52rem) { .stepper { grid-template-columns: 17rem minmax(0, 1fr); align-items: start; } }
+.step-list { list-style: none; padding: 0; display: grid; gap: 2px; counter-reset: s; }
+.step-list button { counter-increment: s; width: 100%; text-align: left; display: grid; grid-template-columns: 1.5rem 1fr; gap: var(--s2); padding: var(--s2) var(--s3); background: none; border: 0; border-left: 3px solid transparent; font: 400 var(--t-sm)/1.4 var(--sans); color: var(--ink); cursor: pointer; }
+.step-list button::before { content: counter(s); font-family: var(--mono); color: var(--graphite); }
+.step-list button:hover { background: var(--paper); }
+.step-list button[aria-current="step"] { border-left-color: var(--sepia); background: var(--paper); font-weight: 600; }
+.step-view { display: grid; gap: var(--s3); }
+.step-nav { display: flex; gap: var(--s2); align-items: center; flex-wrap: wrap; }
+.btn { font: 600 var(--t-sm)/1 var(--sans); min-height: 2.5rem; padding: 0 var(--s4); border: 1px solid var(--graphite); background: var(--sheet); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; text-decoration: none; }
+.btn.primary { background: var(--sepia); border-color: var(--sepia); color: #fff; }
+.tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--rule-strong); }
+.tabs button { font: 600 var(--t-sm)/1.2 var(--sans); background: none; border: 0; border-bottom: 3px solid transparent; padding: var(--s2) var(--s3); color: var(--graphite); cursor: pointer; text-align: left; min-height: 2.5rem; }
+.tabs button span { display: block; font: 400 var(--t-xs) var(--mono); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--sepia); }
+.subtabs { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.subtabs button { font: 400 var(--t-sm) var(--sans); background: var(--sheet); border: 1px solid var(--rule-strong); padding: var(--s1) var(--s3); min-height: 2rem; cursor: pointer; color: var(--ink); }
+.subtabs button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); font-weight: 600; }
+
+/* lightbox */
+dialog.lightbox { border: 0; padding: 0; max-width: min(96vw, 1440px); max-height: 94vh; background: var(--sheet); box-shadow: 0 30px 72px rgb(34 31 27 / 0.4); overflow: auto; }
+dialog.lightbox::backdrop { background: rgb(34 31 27 / 0.6); }
+.lightbox-bar { position: sticky; top: 0; display: flex; justify-content: space-between; gap: var(--s3); align-items: center; padding: var(--s2) var(--s3); background: var(--sheet); border-bottom: 1px solid var(--rule); font-size: var(--t-sm); }
+
+.foot { grid-column: 1 / -1; font-size: var(--t-sm); color: var(--graphite); padding-top: var(--s4); border-top: 1px solid var(--rule-strong); display: grid; gap: var(--s2); }
+
+/* ------------------------------------------------------------ the process steps
+   Read the headlines alone and the work is told: what I did, why, how. Each
+   chapter is one sheet: the phase and the part of the brief it answers, a
+   headline that makes a claim, two lines on what I did, one picture. The rest
+   opens on request. */
+.overview-head { display: grid; gap: var(--s4); }
+.headlines { list-style: none; padding: 0; display: grid; gap: 0; counter-reset: h; border-top: 1px solid var(--rule); }
+.headlines li { counter-increment: h; border-bottom: 1px solid var(--rule); }
+.headlines a { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: var(--s3); padding: var(--s3) 0; color: var(--ink); text-decoration: none; align-items: baseline; }
+.headlines a::before { content: counter(h); font-family: var(--mono); color: var(--sepia); }
+.headlines a:hover .hl { text-decoration: underline; text-underline-offset: 0.2em; }
+.headlines .hl { font-family: var(--display); font-size: var(--t-xl); line-height: 1.2; }
+.headlines .ph { display: block; font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); margin-top: var(--s1); }
+@media (min-width: 52rem) { .headlines .hl { font-size: var(--t-2xl); } }
+
+.chapter-tag { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); align-items: baseline; font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); }
+.chapter-tag .num { font-family: var(--mono); font-weight: 400; font-size: var(--t-sm); letter-spacing: 0; color: var(--sepia); text-transform: none; }
+.chapter-tag .brief { font-weight: 400; letter-spacing: 0; text-transform: none; font-size: var(--t-sm); }
+.deck { font-size: var(--t-lg); line-height: 1.5; max-width: 36em; }
+.did { list-style: none; padding: 0; display: grid; gap: var(--s2); max-width: 44em; }
+.did li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); gap: var(--s2); }
+.did li::before { content: "\2192" / ""; color: var(--sepia); font-weight: 600; }
+.did b { font-weight: 600; }
+
+details.more { border-top: 1px solid var(--rule); }
+details.more > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: var(--s2);
+  min-height: 2.75rem; font-weight: 600; font-size: var(--t-sm); color: var(--sepia);
+}
+details.more > summary::-webkit-details-marker { display: none; }
+details.more > summary::before { content: "+"; font-family: var(--mono); width: 1.25rem; height: 1.25rem; display: inline-grid; place-items: center; box-shadow: inset 0 0 0 1px var(--sepia); }
+details.more[open] > summary::before { content: "\2212"; }
+details.more > .more-body { display: grid; gap: var(--s5); padding: var(--s3) 0 var(--s4); }
+
+.choices { list-style: none; padding: 0; display: grid; gap: var(--s2); }
+.choices li { display: grid; gap: var(--s1) var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--rule); }
+@media (min-width: 52rem) { .choices li { grid-template-columns: 10rem minmax(0, 1fr) minmax(0, 1fr); align-items: baseline; } }
+.choices .topic { font-family: var(--mono); font-size: var(--t-sm); color: var(--graphite); }
+.choices .chose b, .choices .over b { display: block; font-size: var(--t-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); }
+.choices .chose { font-weight: 600; }
+.choices .over { color: var(--graphite); font-size: var(--t-sm); }
+.viewer-tabs { margin-bottom: var(--s3); }
+.panel[hidden] { display: none; }
+.split { display: grid; gap: var(--s5); }
+@media (min-width: 52rem) { .split { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#overview">Skip to the overview</a>
+
+<div class="page">
+  <header class="top">
+    <span class="wordmark">DealDesk</span>
+    <span class="crumb">Design process</span>
+    <nav class="links" aria-label="Deliverables">
+      <a href="../prototype/index.html">Homepage</a>
+      <a href="../prototype/app.html#/start">Sample review</a>
+      <a href="https://github.com/aitch00/dealdesk-design-exercise">Repository</a>
+    </nav>
+  </header>
+
+  <nav class="index" aria-label="Sections">
+    <ol>
+      <li><a href="#overview"><span class="n">·</span><span>Overview</span></a></li>
+      <li><a href="#problem"><span class="n">1</span><span>The problem</span></a></li>
+      <li><a href="#mapping"><span class="n">2</span><span>Users and tasks</span></a></li>
+      <li><a href="#rules"><span class="n">3</span><span>The rules</span></a></li>
+      <li><a href="#options"><span class="n">4</span><span>The options</span></a></li>
+      <li><a href="#rounds"><span class="n">5</span><span>The iterations</span></a></li>
+      <li><a href="#design"><span class="n">6</span><span>The app</span></a></li>
+      <li><a href="#homepage"><span class="n">7</span><span>The homepage</span></a></li>
+      <li><a href="#proof"><span class="n">8</span><span>Checks and next steps</span></a></li>
+    </ol>
+    <p class="label">Appendix</p>
+    <ol>
+      <li><a href="#scenario"><span class="n">A</span><span>The scenario</span></a></li>
+      <li><a href="#evolution"><span class="n">B</span><span>Screens at each stage</span></a></li>
+      <li><a href="#appendix"><span class="n">C</span><span>Method notes</span></a></li>
+    </ol>
+  </nav>
+
+  <main class="flow">
+
+    <!-- overview -->
+    <section class="sheet overview-head" id="overview" aria-labelledby="overview-title">
+      <p class="eyebrow">Design process · DealDesk sample message review</p>
+      <h1 id="overview-title">How I designed the DealDesk homepage and sample review</h1>
+      <p class="deck">The brief: help a deal coordinator see if a message is ready to send, and explain the product to the firm that buys it. This page describes the process in eight steps. Each title says what I did.</p>
+      <ol class="headlines">
+        <li><a href="#problem"><span><span class="hl">The problem: wrong messages often look right</span><span class="ph">Customer, user, problem, outcome</span></span></a></li>
+        <li><a href="#mapping"><span><span class="hl">I described the users, their tasks and their mistakes</span><span class="ph">Assumptions and task flow</span></span></a></li>
+        <li><a href="#rules"><span><span class="hl">I defined the review rules before the screens</span><span class="ph">Early exploration</span></span></a></li>
+        <li><a href="#options"><span><span class="hl">I compared options in the working prototype</span><span class="ph">Alternatives and trade-offs</span></span></a></li>
+        <li><a href="#rounds"><span><span class="hl">After each test I changed the interface, not the rules</span><span class="ph">Iterations after checking</span></span></a></li>
+        <li><a href="#design"><span><span class="hl">The app shows first who has to act</span><span class="ph">Final hierarchy, interaction and visual design</span></span></a></li>
+        <li><a href="#homepage"><span><span class="hl">The homepage shows the problem first</span><span class="ph">The homepage for the buyer</span></span></a></li>
+        <li><a href="#proof"><span><span class="hl">What I checked, and what still needs real users</span><span class="ph">Checks, limits, next research question</span></span></a></li>
+      </ol>
+      <div class="pad" role="note">
+        <p>Yellow notes like this one mark what is simulated, assumed or not done yet.</p>
+      </div>
+    </section>
+
+    <!-- 1 -->
+    <section class="sheet" id="problem" aria-labelledby="c1">
+      <p class="chapter-tag"><span class="num">1</span>Problem<span class="brief">Brief: customer, primary user, problem, outcome</span></p>
+      <h2 id="c1">The problem: wrong messages often look right</h2>
+      <p class="deck">Sam Lee works for the client, so his name looks normal in CC. But he is not on the deal team. A generic warning does not catch this, because it checks the email address, not the deal.</p>
+      <ul class="did">
+        <li><span><b>I identified three roles in the brief:</b> the operations lead who buys the product, the coordinator who sends messages, and the deal owner who approves exceptions.</span></li>
+        <li><span><b>I found the same pattern in the three errors:</b> each one looks correct. A known name, a confident sentence, an approval for an older version.</span></li>
+        <li><span><b>I defined the goal:</b> the coordinator sees quickly if <em>this version</em> can be sent, and messages without problems are not slowed down.</span></li>
+      </ul>
+      <figure>
+        <button class="shot" type="button" data-full="img/scenario/s1-flagged.webp" aria-label="Enlarge: the Project Harbor draft when it opens"><img src="img/scenario/s1-flagged.webp" width="1440" height="900" alt="The Project Harbor draft: Sam Lee flagged in CC, the guaranteed-completion sentence underlined, status Blocked." loading="lazy"></button>
+        <figcaption>The sample draft when it opens: two problems that look normal, and both block sending.</figcaption>
+      </figure>
+      <details class="more">
+        <summary>The three errors, and what each role needs</summary>
+        <div class="more-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Error</th><th scope="col">Looks like</th><th scope="col">Really is</th><th scope="col">Why it looks correct</th></tr></thead>
+              <tbody>
+                <tr><td>Sam Lee in CC</td><td>A contact at the client</td><td>A person outside the deal team</td><td>Known name, the client's email domain</td></tr>
+                <tr><td>"Completion is guaranteed by 30 June."</td><td>A positive sentence</td><td>A promise the firm cannot make</td><td>It sounds sure, not wrong</td></tr>
+                <tr><td>A draft edited after approval</td><td>An approved draft</td><td>A version nobody approved</td><td>The approval is still visible, but it was for the old version</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cols three">
+            <div class="block"><h3>Operations lead · buys</h3><p>Wants fewer avoidable mistakes and a record of decisions, without slowing every message. The product does not guarantee legal correctness.</p></div>
+            <div class="block"><h3>Coordinator · sends</h3><p>Works fast on several deals. Recognises names quickly, and can think that a person from the client is on the deal.</p></div>
+            <div class="block"><h3>Deal owner · decides</h3><p>Approves exceptions. The coordinator can ask, but cannot approve their own request.</p></div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 2 -->
+    <section class="sheet" id="mapping" aria-labelledby="c2">
+      <p class="chapter-tag"><span class="num">2</span>Users<span class="brief">Brief: assumptions, task flow</span></p>
+      <h2 id="c2">I described the users, their tasks and their mistakes</h2>
+      <p class="deck">Before designing screens, I described the work. With a client, this helps to discuss facts instead of personal taste: which task does this screen support, and which mistake does it prevent?</p>
+      <ul class="did">
+        <li><span><b>I split the brief into 91 requirements</b> with an ID each. 59 are in scope, and each one is linked to a screen.</span></li>
+        <li><span><b>I wrote three proto-personas and their journeys:</b> each step of the task, and the mistakes possible at each step.</span></li>
+        <li><span><b>I turned the journeys into 14 use cases</b>, each with the data it reads and changes. Desk research on seven topics supports the choices.</span></li>
+      </ul>
+      <ol class="chain">
+        <li><b>91</b>requirements, each with an ID</li>
+        <li><b>3</b>journeys with tasks and mistakes</li>
+        <li><b>14</b>use cases with their data</li>
+        <li><b>1</b>model of the review rules</li>
+        <li><b>1</b>page, each requirement linked</li>
+      </ol>
+      <details class="more">
+        <summary>Task flow, research and assumptions</summary>
+        <div class="more-body">
+          <div class="cols">
+            <div class="block">
+              <h3>Task flow (the five steps in the brief)</h3>
+              <ol class="steps">
+                <li>Open the draft: see the deal, the recipients and the status</li>
+                <li>Look at each problem, explained next to the text</li>
+                <li>Fix it, or ask the deal owner for an exception</li>
+                <li>Check the final recipients, text and approvals</li>
+                <li>Send (simulated) and read the record</li>
+              </ol>
+            </div>
+            <div class="block">
+              <h3>Desk research</h3>
+              <p>Approval by a second person, how code-review tools handle approvals after a change, warnings about recipients, reports on emails sent to the wrong person, too many alerts, too much trust in automation, WCAG 2.2. Each later decision refers to a finding.</p>
+            </div>
+          </div>
+          <div class="pad" role="note">
+            <p class="pad-title">Assumptions, to check with a real client</p>
+            <ul>
+              <li>The personas are <strong>proto-personas</strong>: based on the brief, not on research.</li>
+              <li>The firm has a team list for each deal, and the deal owner keeps it up to date.</li>
+              <li>Text checks are based on patterns: "Flagged wording" asks the user to review, it is not a final judgement.</li>
+              <li>Coordinators write drafts in DealDesk and send them from their normal email.</li>
+            </ul>
+          </div>
+          <p class="muted" style="font-size:var(--t-sm);max-width:var(--measure)"><strong>Not included on purpose:</strong> real email, backend, login. Only the Project Harbor draft is interactive. The deal owner's view is simulated.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- 3 -->
+    <section class="sheet" id="rules" aria-labelledby="c3">
+      <p class="chapter-tag"><span class="num">3</span>Rules<span class="brief">Brief: early exploration</span></p>
+      <h2 id="c3">I defined the review rules before the screens</h2>
+      <p class="deck">In the first phase I wrote the rules as a model that a computer can run: what blocks a message, who can approve, what an edit cancels. With fixed rules, I could change the interface many times without the risk of a wrong send.</p>
+      <ul class="did">
+        <li><span><b>I fixed four rules:</b> recipients are checked against the deal team; an approval is valid for one version only; the check runs when the user asks; sending is not possible while something blocks it.</span></li>
+        <li><span><b>I tested every possible sequence of actions</b>, also actions that no screen offers, to confirm the rules always hold.</span></li>
+        <li><span><b>I created sample data</b>, so the people who collect requirements and the people who build can test ideas on the same structure.</span></li>
+      </ul>
+      <div class="figures">
+        <div class="figure"><span class="big">172,919</span><span class="what">states tested: in none of them can a blocked message be sent</span></div>
+        <div class="figure"><span class="big">0</span><span class="what">cases where the coordinator approves their own exception</span></div>
+        <div class="figure"><span class="big">0</span><span class="what">cases where an approval stays valid after an edit</span></div>
+      </div>
+      <details class="more">
+        <summary>Why I start from the structure</summary>
+        <div class="more-body">
+          <div class="cols">
+            <div class="block"><h3>For the client</h3><p>Users, tasks and rules help to discuss facts, not preferences: which user task does this choice support?</p></div>
+            <div class="block"><h3>For the developers</h3><p>The model and the sample data show what is possible before anything is promised. The prototype uses the same rules, step by step.</p></div>
+            <div class="block"><h3>For the brand</h3><p>Colours, type and tone become a reference that grows with the project, useful when the client has no brand guidelines.</p></div>
+            <div class="block"><h3>For the interface</h3><p>It can change freely. Each feature has its own documentation, so the project is easy to maintain and extend.</p></div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 4 -->
+    <section class="sheet" id="options" aria-labelledby="c4">
+      <p class="chapter-tag"><span class="num">4</span>Options<span class="brief">Brief: alternatives and trade-offs</span></p>
+      <h2 id="c4">I compared options in the working prototype</h2>
+      <p class="deck">For the important choices, I built the options in the working prototype and compared them side by side. Each decision is recorded with the option it replaced and the reason.</p>
+      <ul class="choices">
+        <li><span class="topic">Recipient check</span><span class="chose"><b>Chosen</b>Compare with the deal team</span><span class="over"><b>Instead of</b>A warning "outside your firm": it appears on every client email and does not separate Sam from Alex</span></li>
+        <li><span class="topic">Approvals</span><span class="chose"><b>Chosen</b>An approval is valid for one version</span><span class="over"><b>Instead of</b>Keeping approvals after a change, like code-review tools do</span></li>
+        <li><span class="topic">Structure</span><span class="chose"><b>Chosen</b>One page: list, draft as an email, notes</span><span class="over"><b>Instead of</b>Separate screens, where the status was far from the text</span></li>
+        <li><span class="topic">Brand</span><span class="chose"><b>Chosen</b>"Proofread draft": sepia ink, paper, a serif font</span><span class="over"><b>Instead of</b>"Paper, not cream" and "Technical memo"</span></li>
+        <li><span class="topic">Status colour</span><span class="chose"><b>Chosen</b>Red where the message must change, green when it can go</span><span class="over"><b>Instead of</b>No colour, colour only in the notes, or ochre for warnings</span></li>
+      </ul>
+      <div data-viewer>
+        <div class="tabs viewer-tabs" role="tablist" aria-label="Compare">
+          <button type="button" role="tab" aria-selected="true" aria-controls="v-structure" id="t-structure">Structure</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="v-brand" id="t-brand">Brand</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="v-colour" id="t-colour">Status colour</button>
+        </div>
+        <div class="panel" id="v-structure" role="tabpanel" aria-labelledby="t-structure">
+          <figure>
+            <div class="compare" style="--pos:50%">
+              <img src="img/alternatives/lab-spec-04-request.webp" width="1440" height="1100" alt="First version: the exception request in a panel that replaces the notes.">
+              <div class="after"><img src="img/alternatives/lab-direction-04-request.webp" width="1440" height="1100" alt="Chosen version: the exception request as a second email on top of the draft."></div>
+              <span class="handle" aria-hidden="true"></span>
+              <span class="tagl" aria-hidden="true">First version</span><span class="tagr" aria-hidden="true">Chosen</span>
+            </div>
+            <label class="compare-control">First version <input type="range" min="0" max="100" value="50" aria-label="Move between the first version and the chosen version"> Chosen</label>
+            <figcaption>The same step in both versions: asking the deal owner for an exception. Drag to compare.</figcaption>
+          </figure>
+        </div>
+        <div class="panel" id="v-brand" role="tabpanel" aria-labelledby="t-brand" hidden data-options>
+          <div class="seg" role="group" aria-label="Brand direction">
+            <button type="button" aria-pressed="false" data-img="img/alternatives/brand-dir1-home.webp" data-note="&lt;span class='tag'&gt;Not chosen.&lt;/span&gt; Safe, but it did not say much about the product. (Shown with a replacement serif font.)">1 · Paper, not cream</button>
+            <button type="button" aria-pressed="true" data-img="img/alternatives/brand-dir2-home.webp" data-note="&lt;span class='tag'&gt;Chosen.&lt;/span&gt; Like a second reading by a proofreader: sepia ink, neutral paper, the draft as a sheet. Different from the colours used by similar products.">2 · Proofread draft</button>
+            <button type="button" aria-pressed="false" data-img="img/alternatives/brand-dir3-home.webp" data-note="&lt;span class='tag'&gt;Not chosen.&lt;/span&gt; Precise but cold for a partner, and the monospaced font everywhere made reading slower.">3 · Technical memo</button>
+          </div>
+          <figure>
+            <button class="shot" type="button" data-full="img/alternatives/brand-dir2-home.webp" aria-label="Enlarge the brand direction"><img class="option-img" src="img/alternatives/brand-dir2-home.webp" width="1440" height="900" alt="The homepage in the selected brand direction." loading="lazy"></button>
+            <figcaption class="option-note"><span class="tag">Chosen.</span> Like a second reading by a proofreader: sepia ink, neutral paper, the draft as a sheet. Different from the colours used by similar products.</figcaption>
+          </figure>
+        </div>
+        <div class="panel" id="v-colour" role="tabpanel" aria-labelledby="t-colour" hidden data-options>
+          <div class="seg" role="group" aria-label="Colour option">
+            <button type="button" aria-pressed="false" data-img="img/alternatives/colour-a-mono.webp" data-note="&lt;span class='tag'&gt;Before.&lt;/span&gt; Correct and accessible, but nothing guided the eye before reading.">A · No colour</button>
+            <button type="button" aria-pressed="false" data-img="img/alternatives/colour-b-notes.webp" data-note="&lt;span class='tag'&gt;Not chosen.&lt;/span&gt; The problem was not visible where the coordinator works: in the draft.">B · Notes only</button>
+            <button type="button" aria-pressed="false" data-img="img/alternatives/colour-c-everywhere.webp" data-note="&lt;span class='tag'&gt;Not chosen.&lt;/span&gt; Ochre warnings looked like the brown action buttons, and green in the list attracted attention to drafts that were already fine.">C · Everywhere</button>
+            <button type="button" aria-pressed="true" data-img="img/alternatives/colour-d-chosen.webp" data-note="&lt;span class='tag'&gt;Chosen.&lt;/span&gt; One meaning for each colour. Words and icons still show the status without colour.">D · Two colours</button>
+          </div>
+          <figure>
+            <button class="shot" type="button" data-full="img/alternatives/colour-d-chosen.webp" aria-label="Enlarge the colour option"><img class="option-img" src="img/alternatives/colour-d-chosen.webp" width="1440" height="900" alt="The sample review in the selected colour option." loading="lazy"></button>
+            <figcaption class="option-note"><span class="tag">Chosen.</span> One meaning for each colour. Words and icons still show the status without colour.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="sheet" id="rounds" aria-labelledby="c5">
+      <p class="chapter-tag"><span class="num">5</span>Iterations<span class="brief">Brief: a concrete change after checking</span></p>
+      <h2 id="c5">After each test I changed the interface, not the rules</h2>
+      <p class="deck">After every test I changed what people see, and kept the rules the same. The first test is the clearest example: the rules were correct, but the screen did not say clearly who receives the message.</p>
+      <ul class="did">
+        <li><span><b>I ran a first comprehension test</b> with new AI readers. "Can it be sent?": correct 21 times out of 21. "Who receives it?": correct only 9 times.</span></li>
+        <li><span><b>I added To and CC labels, and the user's name</b> in the top bar. "Who receives it?" went to 20 out of 21.</span></li>
+        <li><span><b>I continued in rounds:</b> one page instead of separate screens, a "Next" label, a mobile layout, a UI review, and a final pass on grid, depth and colour.</span></li>
+      </ul>
+      <div class="split">
+        <figure>
+          <div class="compare" style="--pos:50%">
+            <img src="img/evolution/t1-first-build-1-open-1440.webp" width="1440" height="900" alt="First build: separate screens, recipients without To and CC labels, the simulation panel always open.">
+            <div class="after"><img src="img/evolution/t6-final-1-open-1440.webp" width="1440" height="900" alt="Final version: one page, the draft as an email with To and CC, the status and the next step in the notes."></div>
+            <span class="handle" aria-hidden="true"></span>
+            <span class="tagl" aria-hidden="true">First build</span><span class="tagr" aria-hidden="true">Final</span>
+          </div>
+          <label class="compare-control">First <input type="range" min="0" max="100" value="50" aria-label="Move between the first build and the final version"> Final</label>
+          <figcaption>The same screen in the first build and today. Drag to compare.</figcaption>
+        </figure>
+        <div class="bars" role="img" aria-label="Correct and sure answers out of 21. Can it be sent: 21 before, 21 after. Who receives it: 9 before, 20 after. What is approved: 17 before, 21 after.">
+          <div class="bar-row" aria-hidden="true"><span>Can it be sent</span><span class="pair"><span class="bar-track"><span class="bar-fill before" style="width:100%"></span></span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span></span><span class="mono">21 → 21</span></div>
+          <div class="bar-row" aria-hidden="true"><span>Who receives it</span><span class="pair"><span class="bar-track"><span class="bar-fill before" style="width:42.9%"></span></span><span class="bar-track"><span class="bar-fill" style="width:95.2%"></span></span></span><span class="mono">9 → 20</span></div>
+          <div class="bar-row" aria-hidden="true"><span>What is approved</span><span class="pair"><span class="bar-track"><span class="bar-fill before" style="width:81%"></span></span><span class="bar-track"><span class="bar-fill" style="width:100%"></span></span></span><span class="mono">17 → 21</span></div>
+          <p class="muted" style="font-size:var(--t-xs)" aria-hidden="true">Correct and sure answers out of 21. Light bar: before. Dark bar: after.</p>
+          <div class="pad" role="note"><p>Three AI readers for each round: the result shows a direction, it is not a measurement.</p></div>
+        </div>
+      </div>
+      <details class="more">
+        <summary>All the rounds</summary>
+        <div class="more-body">
+          <div class="lanes" role="img" aria-label="Timeline from 9 to 14 November. The review rules stayed the same. The interface: first build on 9 November; usability and brand on 10; analysis and wireframes on 11, no change; three columns on 12; mobile and UI review on 13; grid, depth and colour on 14.">
+            <div class="days" aria-hidden="true"><span>9 Nov</span><span>10 Nov</span><span>11 Nov</span><span>12 Nov</span><span>13 Nov</span><span>14 Nov</span></div>
+            <div class="lane">
+              <p class="lane-name">Review rules</p>
+              <div class="track"><div class="rules-bar">The same in every round</div></div>
+            </div>
+            <div class="lane">
+              <p class="lane-name">Interface</p>
+              <div class="track">
+                <div class="round"><i class="d">9 Nov</i> First build <small>separate screens</small></div>
+                <div class="round"><i class="d">10 Nov</i> Usability, brand</div>
+                <div class="round quiet"><i class="d">11 Nov</i> Analysis, wireframes</div>
+                <div class="round"><i class="d">12 Nov</i> Three columns</div>
+                <div class="round"><i class="d">13 Nov</i> Mobile, UI review</div>
+                <div class="round"><i class="d">14 Nov</i> Grid, depth, colour</div>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Round</th><th scope="col">Problem found</th><th scope="col">Change</th></tr></thead>
+              <tbody>
+                <tr><td>Usability</td><td>"Who receives it?" was unclear; the user had no name</td><td>To and CC labels; "You're working as Jordan Blake"</td></tr>
+                <tr><td>Structure</td><td>Six areas with the same weight; the status at the top and at the bottom</td><td>One page: list, draft, notes, with the status first</td></tr>
+                <tr><td>Three columns</td><td>With two possible actions, readers did not know which came first</td><td>"Next" on the action to take; on <span class="mono">Run check</span> when a check is needed first</td></tr>
+                <tr><td>Mobile</td><td>The top banner filled the first screen; the action was far from the status</td><td>Fixed bars at the top and bottom; a shorter status</td></tr>
+                <tr><td>UI review</td><td>"Next", selection and focus looked the same</td><td>Three different signals; repeated sentences removed</td></tr>
+                <tr><td>Visual pass</td><td>Nothing guided the eye to what must change</td><td>Sheets on a desk; red and green status colours</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 6 -->
+    <section class="sheet" id="design" aria-labelledby="c6">
+      <p class="chapter-tag"><span class="num">6</span>App design<span class="brief">Brief: final hierarchy, interactions, visual design</span></p>
+      <h2 id="c6">The app shows first who has to act</h2>
+      <p class="deck">Each problem starts with one word that says who has to act. The status and the next step are at the top. The draft is in the centre, shown like the email it will be.</p>
+      <ul class="did">
+        <li><span><b>Blocking</b> means the coordinator acts. <b>Pending</b> means the deal owner acts. <b>Ready to send</b> means nobody has to act.</span></li>
+        <li><span><b>Each status is different in five ways:</b> word, icon, line style, colour, and if sending is allowed. Colour is never the only signal.</span></li>
+        <li><span><b>The next step is always visible:</b> "Next" on the action to take, and "See why you can't send" instead of a hidden button.</span></li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">On screen</th><th scope="col">Who acts</th><th scope="col">Line</th><th scope="col">Colour</th><th scope="col">Sending</th></tr></thead>
+          <tbody>
+            <tr><td><span class="state-row st-blocking"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.3 3h7.4L21 8.3v7.4L15.7 21H8.3L3 15.7V8.3z"/><path d="M8 12h8"/></svg><span><strong>Blocking</strong> · Not on the deal team</span></span></td><td>The coordinator</td><td>Solid</td><td><span class="swatch" style="background:var(--red)"></span>Red</td><td>Blocked</td></tr>
+            <tr><td><span class="state-row st-warning"><span class="mono">[1]</span><span><strong>Warning</strong> · Doesn't block</span></span></td><td>The coordinator, if they want</td><td>Dashed</td><td><span class="swatch" style="background:var(--graphite)"></span>Grey</td><td>Allowed</td></tr>
+            <tr><td><span class="state-row st-pending"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><strong>Pending</strong> · Not approved yet</span></span></td><td>The deal owner</td><td>Solid</td><td><span class="swatch" style="background:var(--ink)"></span>Black</td><td>Blocked</td></tr>
+            <tr><td><span class="state-row st-ready"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.2 9.6"/></svg><span><strong>Ready to send</strong></span></span></td><td>Nobody</td><td>Solid</td><td><span class="swatch" style="background:var(--green)"></span>Green</td><td>Allowed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cols" style="grid-template-columns:minmax(0,3fr) minmax(0,1fr)">
+        <figure>
+          <button class="shot" type="button" data-full="img/scenario/s3-pending.webp" aria-label="Enlarge: waiting for the deal owner, desktop"><img src="img/scenario/s3-pending.webp" width="1440" height="900" alt="Desktop: the draft waiting for Dana Whitfield's decision, the simulation on a yellow note." loading="lazy"></button>
+          <figcaption>Desktop: list, draft, notes.</figcaption>
+        </figure>
+        <figure class="phone">
+          <button class="shot" type="button" data-full="img/scenario/m-flagged.webp" aria-label="Enlarge: the draft on a phone"><img src="img/scenario/m-flagged.webp" width="375" height="812" alt="Phone: the draft at full width, the card under its line, the action in a bar at the bottom." loading="lazy"></button>
+          <figcaption>Phone: each card under its line.</figcaption>
+        </figure>
+      </div>
+      <details class="more">
+        <summary>Interactions, visual style, mobile and accessibility</summary>
+        <div class="more-body">
+          <div class="cols">
+            <div class="block">
+              <h3>Interactions</h3>
+              <ul class="prose" style="padding-left:1.25em">
+                <li>Clicking a flagged recipient or sentence opens its card. After an action, the next card opens.</li>
+                <li>After an edit, the status says what changed and which approval is no longer valid.</li>
+                <li>If the check is not available, the draft is saved, sending stays blocked, and "Try again" is the next step.</li>
+              </ul>
+            </div>
+            <div class="block">
+              <h3>Visual style: sheets on a desk</h3>
+              <ul class="prose" style="padding-left:1.25em">
+                <li>The draft is the white sheet in front. A request or the deal owner's view is a sheet on top of it. The final review is the draft lifted up.</li>
+                <li>Everything simulated is on a yellow note. This colour is used for nothing else.</li>
+                <li>Fonts: Newsreader for titles, Atkinson Hyperlegible Next for text, IBM Plex Mono for versions and times.</li>
+              </ul>
+            </div>
+            <div class="block">
+              <h3>Mobile</h3>
+              <ul class="prose" style="padding-left:1.25em">
+                <li>The list is the first screen. A draft opens at full width.</li>
+                <li>A bar at the top to go back and open the menu; a bar at the bottom with the reason and the main action.</li>
+              </ul>
+            </div>
+            <div class="block">
+              <h3>Accessibility</h3>
+              <ul class="prose" style="padding-left:1.25em">
+                <li>One live region for the status. After each action, focus moves to the next step.</li>
+                <li>The send button can still get focus when sending is not possible, and the reason is linked to it. Click targets are at least 24 px.</li>
+                <li>In forced-colours mode every sheet keeps a visible border.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 7 -->
+    <section class="sheet" id="homepage" aria-labelledby="c7h">
+      <p class="chapter-tag"><span class="num">7</span>Homepage<span class="brief">Brief: the homepage for the partner or operations lead</span></p>
+      <h2 id="c7h">The homepage shows the problem first</h2>
+      <p class="deck">The buyer must see the problem before the product makes sense. So the page starts with the real Project Harbor draft, which looks ready. One button, "Take a second look", shows what is wrong.</p>
+      <ul class="did">
+        <li><span><b>I wrote it for the buyer:</b> I listed 14 questions an operations lead or partner would ask, for example "Is it for firms like ours?", "Does it slow every message?", "What if the check is wrong?", and I checked the page against each one.</span></li>
+        <li><span><b>I made three versions:</b> a page about features, then a page based on the buyer's questions, then a page built on one idea: a message can look ready and not be.</span></li>
+        <li><span><b>I built trust without promises:</b> the limits have their own section. No guarantees, numbers, testimonials or logos, and a test fails if one appears. Each example opens the same state in the sample review.</span></li>
+      </ul>
+      <div data-options>
+        <div class="seg" role="group" aria-label="Homepage version">
+          <button type="button" aria-pressed="false" data-img="img/evolution/home-h1-first-build-1440.webp" data-note="&lt;span class='tag'&gt;First version.&lt;/span&gt; Correct, but it listed features. On a phone, the target customer was not visible in the first screen.">1 · Features</button>
+          <button type="button" aria-pressed="false" data-img="img/evolution/home-h2-buyer-questions-1440.webp" data-note="&lt;span class='tag'&gt;Second version.&lt;/span&gt; Based on the buyer's questions: clearer, but still a list of answers without one main idea.">2 · Buyer's questions</button>
+          <button type="button" aria-pressed="false" data-img="img/evolution/home-h3-story-1440.webp" data-note="&lt;span class='tag'&gt;Third version.&lt;/span&gt; One idea: the draft as written, then a second look. Each section had to show the difference between looking ready and being ready.">3 · One idea</button>
+          <button type="button" aria-pressed="true" data-img="img/evolution/home-h6-final-1440.webp" data-note="&lt;span class='tag'&gt;Today.&lt;/span&gt; The same idea with the product's visual style: the draft is a sheet on the app's desk.">Today</button>
+        </div>
+        <div class="cols" style="grid-template-columns:minmax(0,3fr) minmax(0,1fr);margin-top:var(--s3)">
+          <figure>
+            <button class="shot" type="button" data-full="img/evolution/home-h6-final-1440.webp" aria-label="Enlarge the homepage version"><img class="option-img" src="img/evolution/home-h6-final-1440.webp" width="1440" height="900" alt="The homepage in the selected version." loading="lazy"></button>
+            <figcaption class="option-note"><span class="tag">Today.</span> The same idea with the product's visual style: the draft is a sheet on the app's desk.</figcaption>
+          </figure>
+          <figure class="phone">
+            <button class="shot" type="button" data-full="img/evolution/home-h6-final-375.webp" aria-label="Enlarge: the homepage on a phone"><img src="img/evolution/home-h6-final-375.webp" width="375" height="812" alt="The homepage on a phone: title, the target customer and the button to try the sample review, all in the first screen." loading="lazy"></button>
+            <figcaption>Phone: what it is, who it is for, and how to try it, in the first screen.</figcaption>
+          </figure>
+        </div>
+      </div>
+      <details class="more">
+        <summary>What the page covers, and the main idea</summary>
+        <div class="more-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">The brief asks</th><th scope="col">Where the page answers</th></tr></thead>
+              <tbody>
+                <tr><td>Who uses DealDesk</td><td>The first lines say which firms it is for; a later section explains the coordinator who fixes and the deal owner who decides</td></tr>
+                <tr><td>The problem</td><td>The Project Harbor draft and its second look; "What a second look finds"</td></tr>
+                <tr><td>How review fits the team</td><td>"What you fix, and what the deal owner decides": drafts are written in DealDesk and sent from normal email; deal owners keep the team list and only see what needs them</td></tr>
+                <tr><td>The limits</td><td>"What DealDesk doesn't do": it does not send email, it is not a compliance tool, checks can miss things, it cannot see a message after it is sent</td></tr>
+                <tr><td>A way to try the sample</td><td>"Try the sample review" in the header, in the first screen and at the end; each example opens its state</td></tr>
+                <tr><td>Trust without false claims</td><td>Only real product content. No guarantees, numbers, testimonials, logos or certifications, checked by a test</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="verdicts">
+            <div class="verdict chosen"><span class="tag">Chosen main idea</span><p>"DealDesk shows the difference between a deal message that looks ready and one that is." It is unexpected, because people think reading again is enough, and Sam Lee makes it concrete.</p></div>
+            <div class="verdict"><span class="tag">Not chosen</span><p>"It checks who a message goes to and what it promises": clear but generic, a competitor could say the same. "Only the deal owner approves an exception": credible, but it starts from the solution.</p></div>
+          </div>
+          <div class="pad" role="note"><p><strong>Prepared, not done:</strong> a five-second test (what is it, who is it for) and a test where people repeat the main idea in their own words. The idea works if at least four people out of five can repeat it.</p></div>
+        </div>
+      </details>
+    </section>
+
+    <!-- 8 -->
+    <section class="sheet" id="proof" aria-labelledby="c8">
+      <p class="chapter-tag"><span class="num">8</span>Checks<span class="brief">Brief: checks, limits, next question, success metric</span></p>
+      <h2 id="c8">What I checked, and what still needs real users</h2>
+      <p class="deck">Rules, screens and text are checked automatically after every change. Comprehension was checked with AI readers. No other person has used the prototype yet: this is the next step.</p>
+      <div class="figures">
+        <div class="figure"><span class="big">305</span><span class="what">browser tests on desktop and phone, including keyboard use</span></div>
+        <div class="figure"><span class="big">0</span><span class="what">accessibility errors in every state (axe-core)</span></div>
+        <div class="figure"><span class="big">62</span><span class="what">colour pairs that pass the contrast check</span></div>
+        <div class="figure"><span class="big">589</span><span class="what">visible texts linked to their specification</span></div>
+      </div>
+      <div class="cols">
+        <div class="pad" role="note">
+          <p class="pad-title">Next research question · proposal</p>
+          <p><strong>When they are in a hurry, do coordinators read "Pending" as "almost approved"?</strong> The brief mentions this risk. Only tests with real people can answer it.</p>
+        </div>
+        <div class="pad" role="note">
+          <p class="pad-title">Success metric · proposal</p>
+          <p><strong>Share of flagged messages fixed before sending</strong>, together with the time it takes to fix them, to make sure that safer does not mean slower.</p>
+        </div>
+      </div>
+      <details class="more">
+        <summary>What was checked, how, and what was not</summary>
+        <div class="more-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Check</th><th scope="col">What it shows</th><th scope="col">Result</th></tr></thead>
+              <tbody>
+                <tr><td>Rules model</td><td>Every sequence of actions, up to 10 steps</td><td>172,919 states, all rules hold</td></tr>
+                <tr><td>Same rules in the prototype</td><td>The prototype gives the same result as the model</td><td>3,051 of 3,051 steps identical</td></tr>
+                <tr><td>Browser tests</td><td>The full scenario, the text of every state, focus, keyboard, grid</td><td>305 pass</td></tr>
+                <tr><td>Accessibility</td><td>WCAG 2.2 A and AA in every state at two widths, forced colours, no horizontal scroll at 320 px</td><td>0 errors</td></tr>
+                <tr><td>Text</td><td>Every visible text linked to its source; no false claims on the homepage</td><td>589 links pass</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pad" role="note">
+            <p class="pad-title">Simulated, and not done yet</p>
+            <ul>
+              <li><strong>Comprehension tests</strong> used new AI readers, and I compared their answers with the model: four questions on eight states.</li>
+              <li><strong>Not done:</strong> tests with other people, a real screen reader, browsers other than Chromium. I tested every version myself on desktop and with the keyboard, less on a phone.</li>
+              <li><strong>Based on assumptions:</strong> the personas and the brand. Both need real users.</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h3>Limits of the product (also on the homepage)</h3>
+            <p style="max-width:var(--measure)">It does not send email and cannot stop people sending from their own email. It is not a legal or compliance tool. Its checks depend on an up-to-date team list, and flagged text is a reason to review, not a final judgement.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- appendix -->
+    <section class="sheet" id="scenario" aria-labelledby="ca">
+      <p class="chapter-tag"><span class="num">A</span>Appendix<span class="brief">Brief: walk through the sample scenario</span></p>
+      <h2 id="ca">Project Harbor, step by step</h2>
+      <div class="stepper" data-stepper>
+        <ol class="step-list">
+          <li><button type="button" data-img="img/scenario/s1-flagged.webp" data-link="flagged" data-text="The draft opens blocked: two blocking problems and one warning. Sam Lee's card is open and marked &quot;Next&quot;.">The draft opens blocked</button></li>
+          <li><button type="button" data-img="img/scenario/s2-escalated.webp" data-link="escalated-first" data-text="Sam is not on the deal team: the coordinator asks Dana Whitfield for an exception. The sentence is the next step.">Exception requested for Sam</button></li>
+          <li><button type="button" data-img="img/scenario/s3-pending.webp" data-link="pending" data-text="&quot;Not approved yet. Sending stays blocked.&quot; The sentence is rewritten. Dana's answer is simulated on the yellow note.">Waiting for the deal owner</button></li>
+          <li><button type="button" data-img="img/scenario/s4-approved.webp" data-link="approved" data-text="Dana approves Sam for version 2. Nothing blocks the message: ready to send, with one warning left.">Approved for this version</button></li>
+          <li><button type="button" data-img="img/scenario/s5-ready.webp" data-link="ready" data-text="The final review: who receives it, what changed, what is approved for this version.">Final review</button></li>
+          <li><button type="button" data-img="img/scenario/s6-sent.webp" data-link="sent" data-text="Sent (simulated), with the record: recipients, results, who decided what.">Sent, and the record</button></li>
+          <li><button type="button" data-img="img/scenario/s7-edited.webp" data-link="edited-after-approval" data-text="An edit after the approval: the check and Dana's approval are no longer valid, and the status lists what changed.">Edited after approval</button></li>
+          <li><button type="button" data-img="img/scenario/s8-unavailable.webp" data-link="review-unavailable" data-text="The check is not available: the draft is saved, sending stays blocked, &quot;Try again&quot; is the next step.">Check not available</button></li>
+        </ol>
+        <div class="step-view">
+          <button class="shot" type="button" data-full="img/scenario/s1-flagged.webp" aria-label="Enlarge this step"><img class="step-img" src="img/scenario/s1-flagged.webp" width="1440" height="900" alt="The scenario step in the sample review." loading="lazy"></button>
+          <p class="step-text" aria-live="polite"></p>
+          <div class="step-nav">
+            <button class="btn" type="button" data-prev>Previous</button>
+            <button class="btn" type="button" data-next>Next step</button>
+            <a class="step-link" href="../prototype/app.html#/jump/flagged">Open this state in the prototype</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet" id="evolution" aria-labelledby="cb">
+      <p class="chapter-tag"><span class="num">B</span>Appendix<span class="brief">Each stage, opened again from the repository history</span></p>
+      <h2 id="cb">The screens at each stage</h2>
+      <div data-gallery>
+        <div class="tabs" role="tablist" aria-label="Stage">
+          <button type="button" role="tab" aria-selected="false" data-stage="t1-first-build">First build<span>9 Nov</span></button>
+          <button type="button" role="tab" aria-selected="false" data-stage="t2-usability-brand">Usability, brand<span>10 Nov</span></button>
+          <button type="button" role="tab" aria-selected="false" data-stage="t3-three-columns">Three columns<span>12 Nov</span></button>
+          <button type="button" role="tab" aria-selected="false" data-stage="t4-mobile">Mobile<span>13 Nov</span></button>
+          <button type="button" role="tab" aria-selected="false" data-stage="t5-ui-review">UI review<span>13 Nov</span></button>
+          <button type="button" role="tab" aria-selected="true" data-stage="t6-final">Final<span>14 Nov</span></button>
+        </div>
+        <div class="subtabs" role="group" aria-label="Screen" style="margin-block:var(--s3)">
+          <button type="button" aria-pressed="true" data-state="1-open">Draft opened</button>
+          <button type="button" aria-pressed="false" data-state="2-pending">Waiting for decision</button>
+          <button type="button" aria-pressed="false" data-state="3-edited">Edited after approval</button>
+          <button type="button" aria-pressed="false" data-state="4-ready">Final review</button>
+          <button type="button" aria-pressed="false" data-state="5-sent">Record</button>
+          <button type="button" aria-pressed="false" data-state="home">Homepage</button>
+        </div>
+        <figure>
+          <button class="shot" type="button" data-full="img/evolution/t6-final-1-open-1440.webp" aria-label="Enlarge this stage"><img class="gallery-img" src="img/evolution/t6-final-1-open-1440.webp" width="1440" height="900" alt="Final stage: the draft when it opens." loading="lazy"></button>
+          <figcaption class="gallery-caption" aria-live="polite">Final · draft opened</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="sheet" id="appendix" aria-labelledby="cc">
+      <p class="chapter-tag"><span class="num">C</span>Appendix<span class="brief">Method notes requested by the brief</span></p>
+      <h2 id="cc">How to test it, and how I worked</h2>
+      <details class="more">
+        <summary>How to test if people understand the message</summary>
+        <div class="more-body">
+          <div class="cols">
+            <div class="prose">
+              <p>5 to 8 people who send client emails at work. Eight fixed screens, one at a time. Four questions:</p>
+              <ol>
+                <li>Who will receive this message?</li>
+                <li>What has been approved, and by whom?</li>
+                <li>Can it be sent now, and why?</li>
+                <li>What is the next action, and who does it?</li>
+              </ol>
+            </div>
+            <div class="prose">
+              <p>Each answer is compared with the model: correct and sure, correct but not sure, partly correct, or wrong. A correct answer given with doubt still counts as a problem.</p>
+              <div class="pad" role="note"><p><strong>Pass level, proposal:</strong> questions 1 to 3 correct and sure in at least 90% of answers.</p></div>
+            </div>
+          </div>
+        </div>
+      </details>
+      <details class="more">
+        <summary>The questions the screen answers</summary>
+        <div class="more-body">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Question</th><th scope="col">Answer on screen</th></tr></thead>
+              <tbody>
+                <tr><td>Which deal is this?</td><td>Deal name above the draft; the list grouped by deal; the version next to the name</td></tr>
+                <tr><td>Why is each problem important?</td><td>One line for each problem, next to the text it refers to</td></tr>
+                <tr><td>What can I fix myself?</td><td>Blocking problems: remove the recipient, rewrite the sentence, edit the message</td></tr>
+                <tr><td>What needs another person?</td><td>An exception, only from the deal owner</td></tr>
+                <tr><td>Can I send? If not, why?</td><td>The status at the top and the reason next to the send button, with the same words</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+      <details class="more">
+        <summary>How I worked with AI</summary>
+        <div class="more-body">
+          <div class="cols">
+            <div class="prose">
+              <p>I used AI agents as a sparring partner and to build. Each step started from a plan that I approved. We exchanged proposals until one worked. Visual and communication choices needed the most rounds: how journeys and states read, and the homepage.</p>
+              <p>Every decision I accepted is recorded with the option it replaced. I tested every version myself.</p>
+            </div>
+            <div class="block">
+              <h3>How I checked the AI output</h3>
+              <ul class="prose" style="padding-left:1.25em">
+                <li>A rules model that tests every possible sequence</li>
+                <li>The same results in the model and in the prototype, step by step</li>
+                <li>Tests that fail on any error in the browser console</li>
+                <li>An accessibility check that is tested on a page built to fail</li>
+                <li>Every visible text linked to its specification</li>
+                <li>Comprehension answers compared with the model, not with an opinion</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>DealDesk is a fictional product made for a design exercise. All companies, people and data are fictional. No real email is sent.</p>
+    <p>Prototype: <a href="../prototype/index.html">homepage</a> · <a href="../prototype/app.html#/start">sample review</a>. Repository: <a href="https://github.com/aitch00/dealdesk-design-exercise">github.com/aitch00/dealdesk-design-exercise</a>, with each decision and its alternative, and each check and its limits.</p>
+  </footer>
+</div>
+
+<dialog class="lightbox" aria-label="Enlarged image">
+  <div class="lightbox-bar"><span class="lightbox-caption"></span><button class="btn" type="button" data-close>Close</button></div>
+  <img alt="">
+</dialog>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const APP = "../prototype/app.html";
+
+  // Index: mark the section in view.
+  const links = new Map($$(".index a").map((a) => [a.getAttribute("href").slice(1), a]));
+  const seen = new Map();
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) seen.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0);
+    let best = null, ratio = 0;
+    for (const [id, r] of seen) if (r > ratio) { ratio = r; best = id; }
+    if (!best) return;
+    for (const [id, a] of links) a.setAttribute("aria-current", String(id === best));
+  }, { threshold: [0, 0.15, 0.4, 0.7] });
+  $$(".sheet[id]").forEach((s) => links.has(s.id) && io.observe(s));
+
+  // Compare sliders.
+  $$(".compare").forEach((box) => {
+    const input = box.parentElement.querySelector(".compare-control input");
+    const set = (v) => box.style.setProperty("--pos", `${v}%`);
+    input.addEventListener("input", () => set(input.value));
+    let dragging = false;
+    const at = (x) => { const r = box.getBoundingClientRect(); const v = Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100)); input.value = Math.round(v); set(v); };
+    box.addEventListener("pointerdown", (e) => { dragging = true; box.setPointerCapture(e.pointerId); at(e.clientX); });
+    box.addEventListener("pointermove", (e) => dragging && at(e.clientX));
+    box.addEventListener("pointerup", () => { dragging = false; });
+  });
+
+  // Option switchers (brand, colour).
+  $$("[data-options]").forEach((block) => {
+    const img = $(".option-img", block), shot = $(".shot", block), note = $(".option-note", block);
+    $$(".seg button", block).forEach((b) => b.addEventListener("click", () => {
+      $$(".seg button", block).forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      img.src = b.dataset.img; shot.dataset.full = b.dataset.img;
+      img.alt = `${b.textContent.trim()}, as tried on the real pages.`;
+      note.innerHTML = b.dataset.note;
+    }));
+  });
+
+  // Scenario stepper.
+  const stepper = $("[data-stepper]");
+  if (stepper) {
+    const items = $$(".step-list button", stepper);
+    const img = $(".step-img", stepper), shot = $(".step-view .shot", stepper), text = $(".step-text", stepper), link = $(".step-link", stepper);
+    let i = 0;
+    const show = (n) => {
+      i = (n + items.length) % items.length;
+      items.forEach((b, k) => (k === i ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current")));
+      const b = items[i];
+      img.src = b.dataset.img; shot.dataset.full = b.dataset.img; img.alt = `Step ${i + 1}: ${b.textContent.trim()}.`;
+      text.textContent = b.dataset.text;
+      link.href = `${APP}#/jump/${b.dataset.link}`;
+    };
+    items.forEach((b, k) => b.addEventListener("click", () => show(k)));
+    $("[data-prev]", stepper).addEventListener("click", () => show(i - 1));
+    $("[data-next]", stepper).addEventListener("click", () => show(i + 1));
+    show(0);
+  }
+
+  // Evolution gallery.
+  const gallery = $("[data-gallery]");
+  if (gallery) {
+    const HOME = { "t1-first-build": "h1-first-build", "t2-usability-brand": "h4-brand", "t3-three-columns": "h4-brand", "t4-mobile": "h4-brand", "t5-ui-review": "h5-ui-review", "t6-final": "h6-final" };
+    let stage = "t6-final", state = "1-open";
+    const img = $(".gallery-img", gallery), shot = $(".shot", gallery), cap = $(".gallery-caption", gallery);
+    const tabs = $$("[role=tab]", gallery), states = $$(".subtabs button", gallery);
+    const render = () => {
+      tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.stage === stage)));
+      states.forEach((s) => s.setAttribute("aria-pressed", String(s.dataset.state === state)));
+      const src = state === "home" ? `img/evolution/home-${HOME[stage]}-1440.webp` : `img/evolution/${stage}-${state}-1440.webp`;
+      img.src = src; shot.dataset.full = src;
+      const stageName = tabs.find((t) => t.dataset.stage === stage).firstChild.textContent.trim();
+      const stateName = states.find((s) => s.dataset.state === state).textContent.trim();
+      img.alt = `${stageName} stage: ${stateName.toLowerCase()}.`;
+      cap.textContent = `${stageName} · ${stateName.toLowerCase()}${state === "home" && ["t2-usability-brand", "t3-three-columns", "t4-mobile"].includes(stage) ? " (the homepage did not change at this stage)" : ""}`;
+    };
+    tabs.forEach((t) => t.addEventListener("click", () => { stage = t.dataset.stage; render(); }));
+    tabs.forEach((t, k) => t.addEventListener("keydown", (e) => {
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      const n = tabs[(k + d + tabs.length) % tabs.length]; n.focus(); n.click();
+    }));
+    states.forEach((s) => s.addEventListener("click", () => { state = s.dataset.state; render(); }));
+    render();
+  }
+
+
+  // Viewer tabs (chapter 4).
+  $$("[data-viewer]").forEach((v) => {
+    const tabs = $$("[role=tab]", v);
+    const pick = (t) => tabs.forEach((x) => { const on = x === t; x.setAttribute("aria-selected", String(on)); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute("aria-controls")).hidden = !on; });
+    tabs.forEach((t, k) => {
+      t.addEventListener("click", () => pick(t));
+      t.addEventListener("keydown", (e) => { const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!d) return; const n = tabs[(k + d + tabs.length) % tabs.length]; n.focus(); pick(n); });
+    });
+    pick(tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0]);
+  });
+
+  // Lightbox.
+  const box = $("dialog.lightbox");
+  const big = $("img", box), cap = $(".lightbox-caption", box);
+  let opener = null;
+  $$(".shot").forEach((s) => s.addEventListener("click", () => {
+    const small = $("img", s);
+    opener = s; big.src = s.dataset.full || small.src; big.alt = small.alt; cap.textContent = small.alt;
+    box.showModal();
+  }));
+  $("[data-close]", box).addEventListener("click", () => box.close());
+  box.addEventListener("click", (e) => { if (e.target === box) box.close(); });
+  box.addEventListener("close", () => opener?.focus());
+})();
+</script>
+</body>
+</html>

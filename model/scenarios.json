@@ -1,0 +1,169 @@
+{
+  "about": "Executable scenarios for the DealDesk sample review. Each step runs a command and checks the projection afterwards. Used by scripts/check_state_model.py and, later, by the browser prototype. Actors: p-jordan (coordinator), p-dana (deal owner, simulated), evaluator (simulation controls). \"$latest\" means the most recent exception request.",
+  "constants": {
+    "suggestion": "We are working towards completion by 30 June.",
+    "stillGuaranteed": "Completion is guaranteed by the end of June.",
+    "reason": "Sam is joining Corvane's integration workstream next week and asked to be copied.",
+    "extraParagraph": "We'll share the call notes after Friday."
+  },
+  "scenarios": [
+    {
+      "id": "SC-1",
+      "name": "Brief walkthrough, fixing both issues",
+      "source": "Brief scenario; J1 main path (2.2a + 3.2a)",
+      "steps": [
+        { "expect": { "draftStatus": "Blocked", "checkStatus": "Current", "canSend": false, "reason": "blocking-open" } },
+        { "cmd": "RemoveRecipient", "actor": "p-jordan", "params": { "personId": "p-sam" },
+          "expect": { "draftStatus": "NeedsNewCheck", "checkStatus": "Outdated", "canSend": false, "reason": "outdated" } },
+        { "cmd": "ApplyWording", "actor": "p-jordan", "params": { "issueKey": "wording:guaranteed-completion", "text": "$suggestion" },
+          "expect": { "draftStatus": "NeedsNewCheck", "version": 3 } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "ReadyToSend", "checkStatus": "Current", "canSend": true, "reason": null,
+                      "fixed": ["recipient:p-sam", "wording:guaranteed-completion"],
+                      "issues": [["wording:timing-expectation", "warning", "open"]] } },
+        { "cmd": "Send", "actor": "p-jordan",
+          "expect": { "draftStatus": "Sent", "canSend": false, "reason": "sent" } }
+      ]
+    },
+    {
+      "id": "SC-2",
+      "name": "Brief walkthrough, escalating Sam",
+      "source": "Brief scenario; J1-V1",
+      "steps": [
+        { "cmd": "ApplyWording", "actor": "p-jordan", "params": { "issueKey": "wording:guaranteed-completion", "text": "$suggestion" },
+          "expect": { "draftStatus": "NeedsNewCheck" } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked", "reason": "blocking-open" } },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" },
+          "expect": { "draftStatus": "WaitingForDecision", "canSend": false, "reason": "pending",
+                      "requests": [["recipient:p-sam", "pending"]] } },
+        { "cmd": "Decide", "actor": "p-dana", "params": { "requestId": "$latest", "outcome": "approved" },
+          "expect": { "draftStatus": "ReadyToSend", "canSend": true,
+                      "requests": [["recipient:p-sam", "approved"]] } },
+        { "cmd": "Send", "actor": "p-jordan",
+          "expect": { "draftStatus": "Sent" } }
+      ]
+    },
+    {
+      "id": "SC-3",
+      "name": "Owner declines",
+      "source": "J1-V2; D1b",
+      "steps": [
+        { "cmd": "ApplyWording", "actor": "p-jordan", "params": { "issueKey": "wording:guaranteed-completion", "text": "$suggestion" } },
+        { "cmd": "RunCheck", "actor": "p-jordan" },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" } },
+        { "cmd": "Decide", "actor": "p-dana", "params": { "requestId": "$latest", "outcome": "declined", "note": "Sam isn't cleared for Harbor." },
+          "expect": { "draftStatus": "Blocked", "reason": "declined", "requests": [["recipient:p-sam", "declined"]] } },
+        { "cmd": "SaveEdit", "actor": "p-jordan", "params": { "appendParagraph": "$extraParagraph" },
+          "expect": { "draftStatus": "NeedsNewCheck", "requests": [["recipient:p-sam", "declined"]] } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked", "reason": "declined" } },
+        { "cmd": "RemoveRecipient", "actor": "p-jordan", "params": { "personId": "p-sam" } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "ReadyToSend", "canSend": true, "fixed": ["recipient:p-sam", "wording:guaranteed-completion"] } }
+      ]
+    },
+    {
+      "id": "SC-4",
+      "name": "Edit after approval makes it outdated",
+      "source": "Brief: edit a reviewed draft; J1-V3; D1",
+      "steps": [
+        { "cmd": "ApplyWording", "actor": "p-jordan", "params": { "issueKey": "wording:guaranteed-completion", "text": "$suggestion" } },
+        { "cmd": "RunCheck", "actor": "p-jordan" },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" } },
+        { "cmd": "Decide", "actor": "p-dana", "params": { "requestId": "$latest", "outcome": "approved" },
+          "expect": { "draftStatus": "ReadyToSend" } },
+        { "cmd": "SaveEdit", "actor": "p-jordan", "params": { "appendParagraph": "$extraParagraph" },
+          "expect": { "draftStatus": "NeedsNewCheck", "checkStatus": "Outdated", "canSend": false,
+                      "requests": [["recipient:p-sam", "outdated"]] } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked", "reason": "approval-outdated" } },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" },
+          "expect": { "draftStatus": "WaitingForDecision" } },
+        { "cmd": "Decide", "actor": "p-dana", "params": { "requestId": "$latest", "outcome": "approved" },
+          "expect": { "draftStatus": "ReadyToSend", "canSend": true } }
+      ]
+    },
+    {
+      "id": "SC-5",
+      "name": "Review unavailable",
+      "source": "Brief: review unavailable; J1-V4",
+      "steps": [
+        { "cmd": "SetReviewAvailability", "actor": "evaluator", "params": { "value": "unavailable" } },
+        { "cmd": "RemoveRecipient", "actor": "p-jordan", "params": { "personId": "p-sam" } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "ReviewUnavailable", "checkStatus": "Unavailable", "canSend": false, "reason": "unavailable" } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "ReviewUnavailable" } },
+        { "cmd": "SetReviewAvailability", "actor": "evaluator", "params": { "value": "available" },
+          "expect": { "draftStatus": "ReviewUnavailable" } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked", "checkStatus": "Current", "reason": "blocking-open",
+                      "fixed": ["recipient:p-sam"] } }
+      ]
+    },
+    {
+      "id": "SC-6",
+      "name": "Undo restores the checked content",
+      "source": "UC-03 A2b; M4",
+      "steps": [
+        { "cmd": "RemoveRecipient", "actor": "p-jordan", "params": { "personId": "p-sam" },
+          "expect": { "draftStatus": "NeedsNewCheck", "version": 2 } },
+        { "cmd": "Undo", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked", "checkStatus": "Current", "version": 1 } }
+      ]
+    },
+    {
+      "id": "SC-7",
+      "name": "Request before fixing the wording",
+      "source": "J1-V1 interaction with D1; J1-OP-22",
+      "steps": [
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" },
+          "expect": { "draftStatus": "Blocked", "reason": "blocking-open", "requests": [["recipient:p-sam", "pending"]] } },
+        { "cmd": "ApplyWording", "actor": "p-jordan", "params": { "issueKey": "wording:guaranteed-completion", "text": "$suggestion" },
+          "expect": { "draftStatus": "NeedsNewCheck", "requests": [["recipient:p-sam", "outdated"]] } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked", "reason": "request-outdated" } }
+      ]
+    },
+    {
+      "id": "SC-8",
+      "name": "A rewording that still guarantees stays blocked",
+      "source": "D7: wording check is pattern-based",
+      "steps": [
+        { "cmd": "ApplyWording", "actor": "p-jordan", "params": { "issueKey": "wording:guaranteed-completion", "text": "$stillGuaranteed" } },
+        { "cmd": "RunCheck", "actor": "p-jordan",
+          "expect": { "draftStatus": "Blocked",
+                      "issues": [["recipient:p-sam", "blocking", "open"], ["wording:guaranteed-completion", "blocking", "open"], ["wording:timing-expectation", "warning", "open"]] } }
+      ]
+    },
+    {
+      "id": "SC-9",
+      "name": "Refused commands change nothing",
+      "source": "S3, S4; INV-1, INV-2",
+      "steps": [
+        { "cmd": "Send", "actor": "p-jordan", "rejected": true },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "  " }, "rejected": true },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "wording:timing-expectation", "reason": "$reason" }, "rejected": true },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" } },
+        { "cmd": "Decide", "actor": "p-jordan", "params": { "requestId": "$latest", "outcome": "approved" }, "rejected": true },
+        { "cmd": "RequestException", "actor": "p-jordan", "params": { "issueKey": "recipient:p-sam", "reason": "$reason" }, "rejected": true },
+        { "cmd": "RunCheck", "actor": "p-jordan", "rejected": true },
+        { "cmd": "Undo", "actor": "p-jordan", "rejected": true },
+        { "cmd": "SetReviewAvailability", "actor": "p-jordan", "params": { "value": "unavailable" }, "rejected": true,
+          "expect": { "draftStatus": "Blocked", "requests": [["recipient:p-sam", "pending"]] } }
+      ]
+    },
+    {
+      "id": "SC-10",
+      "name": "Restart returns to the seed",
+      "source": "UC-13",
+      "steps": [
+        { "cmd": "RemoveRecipient", "actor": "p-jordan", "params": { "personId": "p-sam" } },
+        { "cmd": "SetReviewAvailability", "actor": "evaluator", "params": { "value": "unavailable" } },
+        { "cmd": "RestartSample", "actor": "evaluator",
+          "expect": { "draftStatus": "Blocked", "checkStatus": "Current", "version": 1, "requests": [] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design specimen · DealDesk sample</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    /* Specimen styles use tokens only; no literal colours here.
+       Every product string carries data-source="<file>" (or "decision:<ID>"). */
+    .page {
+      max-width: calc(var(--measure) + var(--space-8) * 4);
+      margin: 0 auto;
+      padding: var(--space-5) var(--space-4) var(--space-8);
+    }
+
+    .specimen-header {
+      border-bottom: var(--border-hairline) solid var(--color-divider);
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .specimen-section { margin-bottom: var(--space-7); }
+
+    .specimen-section > h2 {
+      font-size: var(--text-sm);
+      font-weight: var(--weight-semibold);
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: var(--border-hairline) solid var(--color-divider);
+    }
+
+    .example { margin-bottom: var(--space-5); }
+    .example > .token { display: block; margin-bottom: var(--space-2); color: var(--color-text-secondary); }
+
+    code, .token {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      overflow-wrap: anywhere;
+    }
+
+    /* ---------------------------------------------------------- palette */
+    .swatches {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--space-8) * 3), 1fr));
+      gap: var(--space-4);
+    }
+
+    .swatch {
+      background: var(--color-surface-raised);
+      border: var(--border-hairline) solid var(--color-divider);
+      border-radius: var(--radius-panel);
+      overflow: hidden;
+    }
+
+    .swatch-chip { height: var(--space-8); border-bottom: var(--border-hairline) solid var(--color-divider); }
+    .swatch-label { padding: var(--space-2) var(--space-3) var(--space-3); }
+    .swatch-label .token { display: block; color: var(--color-text); }
+
+    .chip-ink { background: var(--ink); }
+    .chip-paper { background: var(--paper); }
+    .chip-graphite { background: var(--graphite); }
+    .chip-sepia { background: var(--sepia); }
+    .chip-white { background: var(--white); }
+    .chip-stone { background: var(--stone); }
+
+    .roles { width: 100%; border-collapse: collapse; }
+    .roles th, .roles td {
+      text-align: left;
+      vertical-align: top;
+      padding: var(--space-2) var(--space-3) var(--space-2) 0;
+      border-bottom: var(--border-hairline) solid var(--color-divider);
+    }
+    .roles th { font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+    .roles .dot {
+      display: inline-block;
+      width: var(--space-4);
+      height: var(--space-4);
+      border-radius: var(--radius-control);
+      border: var(--border-hairline) solid var(--color-divider);
+      vertical-align: middle;
+      margin-right: var(--space-2);
+    }
+
+    /* ------------------------------------------------------- type scale */
+    .type-row {
+      display: grid;
+      gap: var(--space-1);
+      padding: var(--space-4) 0;
+      border-bottom: var(--border-hairline) solid var(--color-divider);
+    }
+
+    .type-sample { margin: 0; max-width: var(--measure); }
+    .t-display { font-family: var(--font-display); font-weight: var(--weight-semibold); font-size: var(--text-display); line-height: var(--leading-heading); }
+    .t-2xl { font-size: var(--text-2xl); font-weight: var(--weight-semibold); line-height: var(--leading-heading); }
+    .t-xl { font-size: var(--text-xl); font-weight: var(--weight-semibold); line-height: var(--leading-heading); }
+    .t-lg { font-size: var(--text-lg); font-weight: var(--weight-medium); line-height: var(--leading-heading); }
+    .t-md { font-size: var(--text-md); line-height: var(--leading-body); }
+    .t-sm { font-size: var(--text-sm); line-height: var(--leading-body); color: var(--color-text-secondary); }
+
+    .weights { display: flex; flex-wrap: wrap; gap: var(--space-5); }
+    .w-regular { font-weight: var(--weight-regular); }
+    .w-medium { font-weight: var(--weight-medium); }
+    .w-semibold { font-weight: var(--weight-semibold); }
+
+    .icon-grid {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(calc(var(--space-8) * 3), 1fr));
+      gap: var(--space-3);
+    }
+
+    .icon-grid li {
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-start;
+      padding: var(--space-3);
+      background: var(--color-surface-raised);
+      border: var(--border-hairline) solid var(--color-divider);
+      border-radius: var(--radius-panel);
+    }
+
+    .with-panel { display: grid; gap: var(--space-4); }
+    .sim-grid { display: grid; gap: var(--space-4); }
+    @media (min-width: 65rem) {
+      .with-panel { grid-template-columns: minmax(0, 1fr) minmax(0, calc(var(--space-8) * 6)); align-items: start; }
+      .sim-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    }
+  </style>
+</head>
+<body>
+  <!-- State icons: one shape per state (docs/4-design/design-system.md); linear, round caps (brand/08 Iconography). -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-octagon" viewBox="0 0 24 24"><path d="M8.3 3h7.4L21 8.3v7.4L15.7 21H8.3L3 15.7V8.3z"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-arrows" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-13.6 5.7"/><path d="M4 12a8 8 0 0 1 13.6-5.7"/><path d="M17.8 2.5v3.9h-3.9"/><path d="M6.2 21.5v-3.9h3.9"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-cloud-off" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 10 4 4 0 0 0 7 18z"/><path d="M4 4l16 16"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.2 9.6"/></symbol>
+    <symbol id="i-check-struck" viewBox="0 0 24 24"><path d="M4.5 12.5l4.5 4.5L19.5 6.5"/><path d="M3 11.5h18"/></symbol>
+    <symbol id="i-clock-struck" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M4 4l16 16"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M3.5 11.2L20.5 3.5l-7.7 17-2.3-7z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l4.2-1 10.6-10.6-3.2-3.2L5 15.8z"/></symbol>
+  </svg>
+
+  <div class="page">
+    <header class="specimen-header">
+      <p class="wordmark" data-source="docs/4-design/screens-and-states.md">DealDesk</p>
+      <h1 class="meta">Design specimen · <code>prototype/css/tokens.css</code> · ratios in <a href="../docs/4-design/contrast.md">contrast.md</a></h1>
+    </header>
+
+    <main>
+      <!-- ============================================================ palette -->
+      <section class="specimen-section" aria-labelledby="palette-primitives">
+        <h2 id="palette-primitives">Colour primitives</h2>
+        <ul class="swatches">
+          <li class="swatch"><div class="swatch-chip chip-ink"></div><div class="swatch-label"><span class="token">--ink</span><span class="meta">brand/08 Ink</span></div></li>
+          <li class="swatch"><div class="swatch-chip chip-paper"></div><div class="swatch-label"><span class="token">--paper</span><span class="meta">brand/08 Paper</span></div></li>
+          <li class="swatch"><div class="swatch-chip chip-graphite"></div><div class="swatch-label"><span class="token">--graphite</span><span class="meta">brand/08 Graphite</span></div></li>
+          <li class="swatch"><div class="swatch-chip chip-sepia"></div><div class="swatch-label"><span class="token">--sepia</span><span class="meta">brand/08 Sepia ink · actions, links, focus, the caret</span></div></li>
+          <li class="swatch"><div class="swatch-chip chip-white"></div><div class="swatch-label"><span class="token">--white</span><span class="meta">raised surfaces</span></div></li>
+          <li class="swatch"><div class="swatch-chip chip-stone"></div><div class="swatch-label"><span class="token">--stone</span><span class="meta">decorative dividers</span></div></li>
+        </ul>
+      </section>
+
+      <section class="specimen-section" aria-labelledby="palette-roles">
+        <h2 id="palette-roles">Colour roles</h2>
+        <table class="roles">
+          <thead>
+            <tr><th scope="col">Role</th><th scope="col">Points to</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="dot" style="background: var(--color-surface)"></span><span class="token">--color-surface</span></td><td class="token">--paper</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-surface-raised)"></span><span class="token">--color-surface-raised</span></td><td class="token">--white</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-text)"></span><span class="token">--color-text</span></td><td class="token">--ink</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-text-secondary)"></span><span class="token">--color-text-secondary</span></td><td class="token">--graphite</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-action)"></span><span class="token">--color-action</span></td><td class="token">--sepia</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-on-action)"></span><span class="token">--color-on-action</span></td><td class="token">--white</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-focus)"></span><span class="token">--color-focus</span></td><td class="token">--sepia</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-border-control)"></span><span class="token">--color-border-control</span></td><td class="token">--graphite</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-divider)"></span><span class="token">--color-divider</span></td><td class="token">--stone</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-state-icon)"></span><span class="token">--color-state-icon</span></td><td class="token">--ink</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-rule-blocks)"></span><span class="token">--color-rule-blocks</span></td><td class="token">--red-600</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-rule-waiting)"></span><span class="token">--color-rule-waiting</span></td><td class="token">--ink</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-state-blocks-tint)"></span><span class="token">--color-state-blocks-tint</span></td><td class="token">--red-100</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-state-ready)"></span><span class="token">--color-state-ready</span></td><td class="token">--green-600</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-state-ready-tint)"></span><span class="token">--color-state-ready-tint</span></td><td class="token">--green-100</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-rule-warning)"></span><span class="token">--color-rule-warning</span></td><td class="token">--graphite</td></tr>
+            <tr><td><span class="dot" style="background: var(--color-simulation)"></span><span class="token">--color-simulation</span></td><td class="token">--legal-pad</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ========================================================= typography -->
+      <section class="specimen-section" aria-labelledby="type-scale">
+        <h2 id="type-scale">Type scale</h2>
+        <div class="type-row">
+          <span class="token">--text-display · --font-display · --weight-semibold</span>
+          <p class="type-sample t-display" data-source="docs/4-design/screens-and-states.md">What a second look finds</p>
+        </div>
+        <div class="type-row">
+          <span class="token">--text-2xl · --weight-semibold</span>
+          <p class="type-sample t-2xl" data-source="docs/4-design/screens-and-states.md">Project Harbor</p>
+        </div>
+        <div class="type-row">
+          <span class="token">--text-xl · --weight-semibold</span>
+          <p class="type-sample t-xl" data-source="docs/4-design/screens-and-states.md">Review before sending · Project Harbor</p>
+        </div>
+        <div class="type-row">
+          <span class="token">--text-lg · --weight-medium</span>
+          <p class="type-sample t-lg tabular" data-source="docs/4-design/screens-and-states.md">Waiting for decision · Requested from Dana Whitfield at 10:42</p>
+        </div>
+        <div class="type-row">
+          <span class="token">--text-md · --leading-body</span>
+          <p class="type-sample t-md" data-source="docs/4-design/screens-and-states.md">Works at Corvane Holdings, the client, but isn't listed on the Project Harbor deal team.</p>
+        </div>
+        <div class="type-row">
+          <span class="token">--text-sm · --color-text-secondary</span>
+          <p class="type-sample t-sm" data-source="docs/4-design/screens-and-states.md">Automated checks can miss things. Read the final message before sending.</p>
+        </div>
+      </section>
+
+      <section class="specimen-section" aria-labelledby="type-weights">
+        <h2 id="type-weights">Weights</h2>
+        <div class="weights">
+          <span class="w-regular" data-source="docs/4-design/screens-and-states.md"><span class="token">--weight-regular</span><br>Note</span>
+          <span class="w-medium" data-source="docs/4-design/screens-and-states.md"><span class="token">--weight-medium</span><br>Not on the deal team</span>
+          <span class="w-semibold" data-source="docs/4-design/screens-and-states.md"><span class="token">--weight-semibold</span><br>Blocking</span>
+        </div>
+      </section>
+
+      <section class="specimen-section" aria-labelledby="type-data">
+        <h2 id="type-data">Versions and times</h2>
+        <div class="type-row">
+          <span class="token">--font-mono · as data</span>
+          <p class="type-sample t-md" data-source="docs/4-design/screens-and-states.md">Sent (simulated) to Pat Morgan and Alex Rivera at <span class="data">11:05</span> · <span class="data">Version 3</span> · No real email left the sample.</p>
+        </div>
+        <div class="type-row">
+          <span class="token">--font-sans · tabular-nums · inside a sentence</span>
+          <p class="type-sample t-md tabular" data-source="docs/4-design/screens-and-states.md">Where you left off: waiting for Dana Whitfield since 10:42.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================== icons -->
+      <section class="specimen-section" aria-labelledby="icons">
+        <h2 id="icons">State icons</h2>
+        <ul class="icon-grid">
+          <li><svg class="icon" aria-hidden="true"><use href="#i-octagon"/></svg><span><span class="token">octagon</span><br><span data-source="docs/4-design/screens-and-states.md">Blocked</span> · <span data-source="docs/4-design/screens-and-states.md">Blocking</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-arrows"/></svg><span><span class="token">circular arrows</span><br><span data-source="docs/4-design/screens-and-states.md">Needs a new check</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span><span class="token">clock</span><br><span data-source="docs/4-design/screens-and-states.md">Waiting for decision</span> · <span data-source="docs/4-design/screens-and-states.md">Pending</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-cloud-off"/></svg><span><span class="token">struck cloud</span><br><span data-source="docs/4-design/screens-and-states.md">Check unavailable</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg><span><span class="token">tick in a circle</span><br><span data-source="docs/4-design/screens-and-states.md">Ready to send</span> · <span data-source="docs/4-design/screens-and-states.md">Approved</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check-struck"/></svg><span><span class="token">struck tick</span><br><span data-source="docs/4-design/copy.md">Approved on version 2 · doesn't cover version 3.</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-clock-struck"/></svg><span><span class="token">struck clock</span><br><span data-source="docs/4-design/copy.md">Your request to Dana Whitfield was for version 1. Request again.</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-x-circle"/></svg><span><span class="token">x in a circle</span><br><span data-source="docs/4-design/screens-and-states.md">Declined</span></span></li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-person"/></svg><span><span class="token">person</span><br><span data-source="docs/4-design/screens-and-states.md">Note</span></span></li>
+          <li><svg class="icon spin" aria-hidden="true"><use href="#i-activity"/></svg><span><span class="token">activity · still under reduced motion</span><br><span data-source="docs/4-design/screens-and-states.md">Checking…</span></span></li>
+        </ul>
+      </section>
+
+      <!-- ===================================================== R2 state phrase -->
+      <section class="specimen-section" aria-labelledby="c-state">
+        <h2 id="c-state">R2 · state phrase</h2>
+
+        <div class="example">
+          <span class="token">Blocked · initial</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-octagon"/></svg>
+            <div><p class="phrase" data-source="docs/4-design/screens-and-states.md">Blocked · Check up to date · 2 blocking issues · Can't send yet</p></div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Blocked · declined</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-octagon"/></svg>
+            <div><p class="phrase" data-source="docs/4-design/screens-and-states.md">Blocked · Check up to date · Dana Whitfield declined an exception · Can't send yet</p></div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Blocked · approval outdated</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-octagon"/></svg>
+            <div><p class="phrase" data-source="docs/4-design/screens-and-states.md">Blocked · Check up to date · Approval for Sam Lee outdated · Can't send yet</p></div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">NeedsNewCheck</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-arrows"/></svg>
+            <div>
+              <p class="phrase" data-source="docs/4-design/screens-and-states.md">Needs a new check · Recipients changed since the last check (version 1)</p>
+              <div class="actions"><button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Run check</button></div>
+              <p class="below-panel" data-source="docs/4-design/screens-and-states.md">What changed since the last check</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">WaitingForDecision</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <div>
+              <p class="phrase tabular" data-source="docs/4-design/screens-and-states.md">Waiting for decision · Requested from Dana Whitfield at 10:42</p>
+              <p class="below" data-source="docs/4-design/copy.md">In this sample, answer as Dana from the Simulation panel.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">ReviewUnavailable</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-cloud-off"/></svg>
+            <div>
+              <p class="phrase" data-source="docs/4-design/screens-and-states.md">Check unavailable · Your draft is saved. Sending stays blocked until the check runs.</p>
+              <div class="actions">
+                <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Try again</button>
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Keep editing</button>
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Back to drafts</button>
+              </div>
+              <p class="below" data-source="docs/4-design/screens-and-states.md">From an earlier check (version 2). May be out of date.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">ReadyToSend · no rule: nothing blocks</span>
+          <div class="state-phrase rule-none">
+            <svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg>
+            <div>
+              <p class="phrase" data-source="docs/4-design/screens-and-states.md">Ready to send · Check up to date (version 3) · 1 warning unchanged</p>
+              <div class="actions"><button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Review before sending</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Checking… · transient, rule unchanged</span>
+          <div class="state-phrase rule-blocks">
+            <svg class="icon spin" aria-hidden="true"><use href="#i-activity"/></svg>
+            <div>
+              <p class="phrase" data-source="docs/4-design/screens-and-states.md">Checking…</p>
+              <div class="actions"><button class="btn" type="button" aria-busy="true" data-source="docs/4-design/screens-and-states.md">Run check</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================== R3 recipient row -->
+      <section class="specimen-section" aria-labelledby="c-recipient">
+        <h2 id="c-recipient">R3 · recipient row</h2>
+
+        <div class="example">
+          <span class="token">Note · on the team · no rule</span>
+          <div class="recipient rule-none">
+            <svg class="icon" aria-hidden="true"><use href="#i-person"/></svg>
+            <p class="detail" data-source="docs/4-design/copy.md"><span class="name">Pat Morgan</span> · pat.morgan@haldenward.example · Halden &amp; Ward · Advisor · On deal team</p>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Blocking · Open</span>
+          <div class="recipient rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-octagon"/></svg>
+            <div>
+              <p class="detail" data-source="docs/4-design/copy.md"><span class="name">Sam Lee</span> · sam.lee@corvane.example · Corvane Holdings · <strong>Blocking</strong> · <strong>Not on the deal team</strong> · Works at Corvane Holdings, the client, but isn't listed on the Project Harbor deal team. Remove Sam Lee, or ask Dana Whitfield to approve an exception.</p>
+              <div class="actions">
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Remove Sam Lee</button>
+                <button class="btn" type="button" aria-label="Request owner exception for Sam Lee" data-source="docs/4-design/screens-and-states.md">Request owner exception</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Pending</span>
+          <div class="recipient rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>
+            <p class="detail tabular" data-source="docs/4-design/copy.md"><span class="name">Sam Lee</span> · sam.lee@corvane.example · Corvane Holdings · <strong>Pending</strong> · Requested from Dana Whitfield at 10:42 · Not approved yet. Sending stays blocked.</p>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Approved · no rule</span>
+          <div class="recipient rule-none">
+            <svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg>
+            <p class="detail tabular" data-source="docs/4-design/copy.md"><span class="name">Sam Lee</span> · sam.lee@corvane.example · Corvane Holdings · <strong>Approved</strong> by Dana Whitfield · 10:51 · for version 2 · Simulated owner response</p>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Approved on an earlier version</span>
+          <div class="recipient rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-check-struck"/></svg>
+            <div>
+              <p class="detail" data-source="docs/4-design/copy.md"><span class="name">Sam Lee</span> · sam.lee@corvane.example · Corvane Holdings · <strong>Blocking</strong> · <strong>Approved on version 2 · doesn't cover version 3</strong></p>
+              <div class="actions"><button class="btn" type="button" aria-label="Request again for Sam Lee" data-source="docs/4-design/screens-and-states.md">Request again</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Request superseded, never decided</span>
+          <div class="recipient rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-clock-struck"/></svg>
+            <div>
+              <p class="detail" data-source="docs/4-design/copy.md"><span class="name">Sam Lee</span> · sam.lee@corvane.example · Corvane Holdings · <strong>Blocking</strong> · Your request to Dana Whitfield was for version 1.</p>
+              <div class="actions"><button class="btn" type="button" aria-label="Request again for Sam Lee" data-source="docs/4-design/screens-and-states.md">Request again</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Declined</span>
+          <div class="recipient rule-blocks">
+            <svg class="icon" aria-hidden="true"><use href="#i-x-circle"/></svg>
+            <div>
+              <p class="detail tabular" data-source="docs/4-design/copy.md"><span class="name">Sam Lee</span> · sam.lee@corvane.example · Corvane Holdings · <strong>Blocking</strong> · <strong>Declined</strong> by Dana Whitfield · 10:55 · 'Sam isn't cleared for Harbor.'</p>
+              <div class="actions">
+                <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Remove Sam Lee</button>
+                <button class="btn" type="button" aria-label="Request again for Sam Lee" data-source="docs/4-design/screens-and-states.md">Request again</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Removed · until the next check</span>
+          <div class="recipient rule-none">
+            <span class="no-icon"></span>
+            <div class="actions" style="margin-top: 0; align-items: center">
+              <p data-source="docs/4-design/copy.md">Sam Lee removed.</p>
+              <button class="btn" type="button" aria-label="Undo removing Sam Lee" data-source="docs/4-design/screens-and-states.md">Undo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================= R4 flagged sentence -->
+      <section class="specimen-section" aria-labelledby="c-sentence">
+        <h2 id="c-sentence">R4 · flagged sentence</h2>
+
+        <div class="example">
+          <span class="token">Blocking · Open · solid underline</span>
+          <div class="message">
+            <p><span class="flag-blocking" data-source="model/seed.json:89">Completion is guaranteed by 30 June.</span><a class="marker" href="#exp-blocking" aria-describedby="exp-blocking">[1]</a></p>
+            <div class="explanation rule-blocks">
+              <p id="exp-blocking" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Blocking</span> · Flagged wording · States completion as certain. The firm can't guarantee deal outcomes. Edit the sentence, or ask Dana Whitfield to approve an exception.</p>
+              <div class="actions">
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Edit sentence</button>
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Request owner exception</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Warning · dashed underline and rule</span>
+          <div class="message">
+            <p><span class="flag-warning" data-source="model/seed.json:88">The diligence workstreams are on track and we expect the remaining data-room requests to close this week.</span><a class="marker" href="#exp-warning" aria-describedby="exp-warning">[2]</a></p>
+            <div class="explanation rule-warning">
+              <p id="exp-warning" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Warning</span> · Sets a timing expectation for the client. It doesn't block sending: confirm the timing yourself before you send.</p>
+              <div class="actions"><button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Edit sentence</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Editor open</span>
+          <div class="message">
+            <div class="field">
+              <span class="label" data-source="docs/4-design/screens-and-states.md">Original</span>
+              <p class="readonly" data-source="model/seed.json:89">Completion is guaranteed by 30 June.</p>
+            </div>
+            <div class="field">
+              <label for="suggested" data-source="docs/4-design/screens-and-states.md">Suggested wording (you can edit it)</label>
+              <textarea id="suggested" data-source="model/seed.json:46">We are working towards completion by 30 June.</textarea>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Apply wording</button>
+              <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Changed · after Apply wording</span>
+          <div class="message">
+            <p><span data-source="model/seed.json:46">We are working towards completion by 30 June.</span><span class="changed-tag" data-source="docs/4-design/screens-and-states.md">Changed</span></p>
+            <div class="explanation rule-blocks">
+              <div class="actions" style="margin-top: 0; align-items: center">
+                <p data-source="docs/4-design/screens-and-states.md">Wording changed. Run the check again.</p>
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Undo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Pending · as the recipient row</span>
+          <div class="message">
+            <p><span class="flag-blocking" data-source="model/seed.json:89">Completion is guaranteed by 30 June.</span><a class="marker" href="#exp-pending" aria-describedby="exp-pending">[1]</a></p>
+            <div class="explanation rule-blocks">
+              <p id="exp-pending" class="tabular" data-source="docs/4-design/copy.md"><span class="label-word">Pending</span> · Requested from Dana Whitfield at 10:42 · Not approved yet. Sending stays blocked.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Approved · as the recipient row · no rule</span>
+          <div class="message">
+            <p><span class="flag-blocking" data-source="model/seed.json:89">Completion is guaranteed by 30 June.</span><a class="marker" href="#exp-approved" aria-describedby="exp-approved">[1]</a></p>
+            <div class="explanation rule-none">
+              <p id="exp-approved" class="tabular" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Approved</span> by Dana Whitfield · 10:51 · for version 2 · Simulated owner response</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Declined · as the recipient row</span>
+          <div class="message">
+            <p><span class="flag-blocking" data-source="model/seed.json:89">Completion is guaranteed by 30 June.</span><a class="marker" href="#exp-declined" aria-describedby="exp-declined">[1]</a></p>
+            <div class="explanation rule-blocks">
+              <p id="exp-declined" class="tabular" data-source="docs/4-design/screens-and-states.md"><span class="label-word">Declined</span> by Dana Whitfield · 10:55</p>
+              <div class="actions"><button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Edit sentence</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Fixed · no marker; listed under Resolved in R5</span>
+          <div class="message">
+            <p data-source="model/seed.json:46">We are working towards completion by 30 June.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================== R5 summary -->
+      <section class="specimen-section" aria-labelledby="c-summary">
+        <h2 id="c-summary">R5 · issue summary</h2>
+        <div class="summary">
+          <p data-source="docs/4-design/copy.md"><strong>2 blocking · 1 warning</strong></p>
+          <p data-source="docs/4-design/copy.md"><strong>Resolved</strong>: Sam Lee — removed (version 2) · Guaranteed completion — reworded (version 3)</p>
+        </div>
+      </section>
+
+      <!-- =========================================================== send area -->
+      <section class="specimen-section" aria-labelledby="c-send">
+        <h2 id="c-send">Send area · R6 in the draft review, final review</h2>
+
+        <div class="example">
+          <span class="token">Draft review · reason next to the button (always openable)</span>
+          <div class="send-area">
+            <button class="btn" type="button" aria-describedby="r6-blocked" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+            <p class="reason" id="r6-blocked" data-source="docs/4-design/screens-and-states.md">Can't send yet: 2 blocking issues need action.</p>
+          </div>
+        </div>
+        <div class="example">
+          <div class="send-area">
+            <button class="btn" type="button" aria-describedby="r6-declined" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+            <p class="reason" id="r6-declined" data-source="docs/4-design/screens-and-states.md">Can't send yet: Dana Whitfield declined the exception for Sam Lee. Remove Sam Lee to continue.</p>
+          </div>
+        </div>
+        <div class="example">
+          <div class="send-area">
+            <button class="btn" type="button" aria-describedby="r6-outdated" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+            <p class="reason" id="r6-outdated" data-source="docs/4-design/screens-and-states.md">Can't send yet: Dana Whitfield's approval covers version 2 only. Request again.</p>
+          </div>
+        </div>
+        <div class="example">
+          <div class="send-area">
+            <button class="btn" type="button" aria-describedby="r6-newcheck" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+            <p class="reason" id="r6-newcheck" data-source="docs/4-design/screens-and-states.md">Can't send yet: the message changed. Run the check again.</p>
+          </div>
+        </div>
+        <div class="example">
+          <div class="send-area">
+            <button class="btn" type="button" aria-describedby="r6-waiting" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+            <p class="reason" id="r6-waiting" data-source="docs/4-design/screens-and-states.md">Can't send yet: waiting for Dana Whitfield's decision on Sam Lee.</p>
+          </div>
+        </div>
+        <div class="example">
+          <div class="send-area">
+            <button class="btn" type="button" aria-describedby="r6-unavailable" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+            <p class="reason" id="r6-unavailable" data-source="docs/4-design/screens-and-states.md">Can't send yet: review is unavailable. Your draft is saved.</p>
+          </div>
+        </div>
+        <div class="example">
+          <span class="token">Draft review · ready: no reason, primary</span>
+          <div class="send-area">
+            <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+          </div>
+        </div>
+
+        <div class="example">
+          <span class="token">Final review · canSend true</span>
+          <div class="send-area">
+            <h3 data-source="docs/4-design/screens-and-states.md">You can send</h3>
+            <button class="btn btn-primary" type="button" aria-describedby="a3-can" data-source="docs/4-design/screens-and-states.md">Send (simulated)</button>
+            <p class="reason" id="a3-can" data-source="docs/4-design/screens-and-states.md">You can send: check up to date (version 3), no blocking issues open.</p>
+          </div>
+        </div>
+        <div class="example">
+          <span class="token">Final review · canSend false · aria-disabled, focusable</span>
+          <div class="send-area">
+            <h3 data-source="docs/4-design/screens-and-states.md">You can't send yet</h3>
+            <button class="btn" type="button" aria-disabled="true" aria-describedby="a3-cannot" data-source="docs/4-design/screens-and-states.md">Send (simulated)</button>
+            <p class="reason" id="a3-cannot" data-source="docs/4-design/screens-and-states.md">Can't send yet: the message changed. <a href="#c-state">Run the check again.</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= buttons -->
+      <section class="specimen-section" aria-labelledby="c-buttons">
+        <h2 id="c-buttons">Buttons</h2>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+          <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Run check</button>
+          <button class="btn" type="button" aria-disabled="true" data-source="docs/4-design/screens-and-states.md">Send (simulated)</button>
+          <button class="btn" type="button" aria-busy="true" data-source="docs/4-design/screens-and-states.md"><svg class="icon spin" aria-hidden="true"><use href="#i-activity"/></svg>Run check</button>
+        </div>
+        <p class="meta" style="margin-top: var(--space-2)"><span class="token">primary · secondary · aria-disabled · aria-busy</span></p>
+      </section>
+
+      <!-- ========================================================== mode bar -->
+      <section class="specimen-section" aria-labelledby="c-mode">
+        <h2 id="c-mode">Edit mode bar</h2>
+        <p class="mode-notice" data-source="docs/4-design/screens-and-states.md">Editing will make Dana Whitfield's approval outdated.</p>
+        <div class="mode-bar">
+          <p class="mode" data-source="docs/4-design/screens-and-states.md">Editing · Changes aren't saved yet</p>
+          <div class="actions" style="margin-top: 0">
+            <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Save changes</button>
+            <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ banner B -->
+      <section class="specimen-section" aria-labelledby="c-banner">
+        <h2 id="c-banner">B · sample review banner · not fixed</h2>
+        <div class="example">
+          <span class="token">base · Simulation shown below --bp-wide only</span>
+          <div class="banner">
+            <p class="banner-text" data-source="docs/4-design/screens-and-states.md">Sample review · Project Harbor · Simulated: no email is sent</p>
+            <div class="banner-actions">
+              <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Back to homepage</button>
+              <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Restart sample</button>
+              <button class="btn only-narrow" type="button" data-source="docs/4-design/screens-and-states.md">Simulation</button>
+            </div>
+          </div>
+        </div>
+        <div class="example">
+          <span class="token">narrow · request waiting indicator</span>
+          <div class="banner">
+            <p class="banner-text" data-source="docs/4-design/screens-and-states.md">Sample review · Project Harbor · Simulated: no email is sent</p>
+            <div class="banner-actions">
+              <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Simulation<span class="visually-hidden" data-source="docs/4-design/screens-and-states.md"> · Pending</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="example">
+          <span class="token">after a jump</span>
+          <div class="banner">
+            <p class="banner-text" data-source="docs/4-design/screens-and-states.md">Jumped to: exception request pending. The sample restarted to show this state.</p>
+            <div class="banner-actions">
+              <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Restart sample</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= P1 -->
+      <section class="specimen-section" aria-labelledby="c-p1">
+        <h2 id="c-p1">P1 · exception request · side panel from --bp-wide, full screen below --bp-narrow</h2>
+        <div class="with-panel">
+          <div class="message">
+            <p data-source="model/seed.json:88">The diligence workstreams are on track and we expect the remaining data-room requests to close this week.</p>
+            <p style="margin-top: var(--space-3)"><span class="flag-blocking" data-source="model/seed.json:89">Completion is guaranteed by 30 June.</span></p>
+          </div>
+          <div class="panel" role="region" aria-labelledby="p1-title">
+            <button class="btn cancel-top" type="button" data-source="docs/4-design/screens-and-states.md">Cancel</button>
+            <h3 id="p1-title" data-source="docs/4-design/screens-and-states.md">Project Harbor · Exception request · Sam Lee as recipient</h3>
+            <p data-source="docs/4-design/screens-and-states.md">To: Dana Whitfield (deal owner)</p>
+            <p class="label-word" data-source="docs/4-design/screens-and-states.md">Not on the deal team</p>
+            <p data-source="docs/4-design/screens-and-states.md">If approved, Sam Lee can receive this message (version 2) only. It doesn't add Sam to the deal team.</p>
+            <p class="rule-blocks" style="padding-left: var(--space-3)" data-source="docs/4-design/screens-and-states.md">1 blocking issue can still be fixed by editing. Fix it first so Dana approves the final version.</p>
+            <p class="label-word" data-source="docs/4-design/screens-and-states.md">Changed since Dana approved version 2</p>
+            <p class="preview" data-source="model/seed.json:88">The diligence workstreams are on track and we expect the remaining data-room requests to close this week.</p>
+            <div class="field">
+              <label for="p1-reason" data-source="docs/4-design/screens-and-states.md">Why does Sam Lee need this message?</label>
+              <textarea id="p1-reason" required></textarea>
+            </div>
+            <div class="panel-footer">
+              <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Send request</button>
+              <button class="btn cancel-bottom" type="button" data-source="docs/4-design/screens-and-states.md">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= P2 -->
+      <section class="specimen-section" aria-labelledby="c-p2">
+        <h2 id="c-p2">P2 · simulation controls · label, position and the legal-pad note</h2>
+        <div class="sim-grid">
+          <aside class="sim-panel" aria-labelledby="sim-label-1">
+            <p class="sim-label" id="sim-label-1" data-source="docs/4-design/screens-and-states.md">Simulation</p>
+            <div>
+              <h3 data-source="docs/4-design/screens-and-states.md">Owner response</h3>
+              <p data-source="docs/4-design/screens-and-states.md">Acting as Dana Whitfield (deal owner)</p>
+              <p class="meta" data-source="docs/4-design/screens-and-states.md">If approved, Sam Lee can receive this message (version 2) only. It doesn't add Sam to the deal team.</p>
+              <div class="actions">
+                <button class="btn btn-primary" type="button" data-source="docs/4-design/screens-and-states.md">Approve exception for Sam Lee</button>
+                <button class="btn" type="button" data-source="docs/4-design/screens-and-states.md">Decline</button>
+              </div>
+            </div>
+            <div>
+              <h3 data-source="docs/4-design/screens-and-states.md">Check service</h3>
+              <label class="actions" style="margin-top: 0; align-items: center">
+                <input type="checkbox" role="switch">
+                <span data-source="decision:OA6">Simulate check outage</span>
+              </label>
+            </div>
+            <div>
+              <h3 data-source="docs/4-design/screens-and-states.md">Things to try</h3>
+              <ul>
+                <li><label><input type="checkbox" checked><span data-source="docs/4-design/copy.md">Sam Lee is on the client's side but not on the deal. What does DealDesk say?</span></label></li>
+                <li><label><input type="checkbox"><span data-source="docs/4-design/copy.md">Ask the deal owner for an exception, then simulate the answer.</span></label></li>
+                <li><label><input type="checkbox"><span data-source="decision:OA6">Edit the message after the check.</span></label></li>
+                <li><label><input type="checkbox"><span data-source="decision:OA6">Simulate the check being unavailable.</span></label></li>
+              </ul>
+            </div>
+            <div>
+              <h3 data-source="docs/4-design/screens-and-states.md">Jump to a state</h3>
+              <ul>
+                <li><a href="app.html#/drafts" data-source="docs/4-design/screens-and-states.md">Sample review from the start</a></li>
+                <li><a href="app.html#/jump/pending" data-source="docs/4-design/screens-and-states.md">Jump: exception request pending</a></li>
+                <li><a href="app.html#/jump/edited-after-approval" data-source="docs/4-design/screens-and-states.md">Jump: approved, then edited</a></li>
+                <li><a href="app.html#/jump/review-unavailable" data-source="docs/4-design/screens-and-states.md">Jump: check unavailable</a></li>
+                <li><a href="app.html#/jump/ready" data-source="docs/4-design/screens-and-states.md">Jump: ready to send</a></li>
+                <li><a href="app.html#/jump/sent" data-source="docs/4-design/screens-and-states.md">Jump: sent</a></li>
+              </ul>
+            </div>
+          </aside>
+
+          <aside class="sim-panel" aria-labelledby="sim-label-2">
+            <p class="sim-label" id="sim-label-2" data-source="docs/4-design/screens-and-states.md">Simulation</p>
+            <div>
+              <h3 data-source="docs/4-design/screens-and-states.md">Owner response</h3>
+              <p data-source="docs/4-design/screens-and-states.md">No exception request waiting. Request one from the draft first.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================================================================= A1 -->
+      <section class="specimen-section" aria-labelledby="c-a1">
+        <h2 id="c-a1">A1 · drafts table · cards below --bp-narrow</h2>
+        <table class="drafts">
+          <thead>
+            <tr>
+              <th scope="col" data-source="docs/4-design/screens-and-states.md">Project</th>
+              <th scope="col" data-source="docs/4-design/screens-and-states.md">Subject</th>
+              <th scope="col" data-source="docs/4-design/screens-and-states.md">Status</th>
+              <th scope="col" data-source="docs/4-design/copy.md">Last activity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" data-source="model/seed.json:23">Project Harbor</th>
+              <td><a href="#c-a1" data-source="model/seed.json:85">Project Harbor — timeline update</a></td>
+              <td data-source="docs/4-design/screens-and-states.md">Blocked</td>
+              <td class="when" data-source="model/seed.json:93">10:20</td>
+            </tr>
+            <tr>
+              <th scope="row" data-source="model/seed.json:23">Project Harbor</th>
+              <td><a href="#c-a1" data-source="model/seed.json:97">Harbor — data-room index</a></td>
+              <td data-source="model/seed.json:67">Sent (simulated) · Yesterday</td>
+              <td class="when" data-source="model/seed.json:97">09:00</td>
+            </tr>
+            <tr>
+              <th scope="row" data-source="model/seed.json:24">Project Harrow</th>
+              <td><a href="#c-a1" data-source="model/seed.json:98">Harrow — kickoff agenda</a></td>
+              <td data-source="model/seed.json:68">Ready to send</td>
+              <td class="when" data-source="model/seed.json:98">09:10</td>
+            </tr>
+            <tr>
+              <th scope="row" data-source="model/seed.json:24">Project Harrow</th>
+              <td><a href="#c-a1" data-source="model/seed.json:99">Harrow — NDA follow-up</a></td>
+              <td data-source="model/seed.json:69">Needs a check</td>
+              <td class="when" data-source="model/seed.json:99">09:20</td>
+            </tr>
+            <tr>
+              <th scope="row" data-source="model/seed.json:25">Project Atlas</th>
+              <td><a href="#c-a1" data-source="model/seed.json:100">Atlas — Q&amp;A responses</a></td>
+              <td data-source="model/seed.json:70">Waiting for decision</td>
+              <td class="when" data-source="model/seed.json:100">09:30</td>
+            </tr>
+            <tr>
+              <th scope="row" data-source="model/seed.json:25">Project Atlas</th>
+              <td><a href="#c-a1" data-source="model/seed.json:101">Atlas — model assumptions</a></td>
+              <td data-source="model/seed.json:71">Ready to send</td>
+              <td class="when" data-source="model/seed.json:101">09:40</td>
+            </tr>
+            <tr>
+              <th scope="row" data-source="model/seed.json:26">Project Lumen</th>
+              <td><a href="#c-a1" data-source="model/seed.json:102">Lumen — introduction</a></td>
+              <td data-source="model/seed.json:72">Needs a check</td>
+              <td class="when" data-source="model/seed.json:102">09:50</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="meta" style="margin-top: var(--space-3)" data-source="docs/4-design/screens-and-states.md">Only Project Harbor — timeline update is interactive in this sample.</p>
+      </section>
+
+      <!-- ========================================================= focus ring -->
+      <section class="specimen-section" aria-labelledby="c-focus">
+        <h2 id="c-focus">Focus ring · shown statically; real focus uses :focus-visible</h2>
+        <div class="actions" style="align-items: center">
+          <button class="btn btn-primary focus-demo" type="button" tabindex="-1" data-source="docs/4-design/screens-and-states.md">Review before sending</button>
+          <button class="btn focus-demo" type="button" tabindex="-1" data-source="docs/4-design/screens-and-states.md">Run check</button>
+          <a class="focus-demo" href="#c-focus" tabindex="-1" data-source="docs/4-design/screens-and-states.md">Sample review from the start</a>
+        </div>
+        <div class="field" style="max-width: var(--measure)">
+          <label for="focus-field" data-source="docs/4-design/screens-and-states.md">Why does Sam Lee need this message?</label>
+          <textarea id="focus-field" class="focus-demo" tabindex="-1"></textarea>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

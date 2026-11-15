@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Drafts · DealDesk sample</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" id="skip-notes" href="#notes" data-source="decision:TC11">Skip to review notes</a>
+  <a class="skip-link" id="skip" href="#main" data-source="docs/4-design/screens-and-states.md">Skip to content</a>
+  <header id="banner"></header>
+  <section id="m2-context" class="m2-context"></section>
+  <div class="workspace" id="workspace" data-req="APP-01 APP-02 APP-32 APP-35 APP-38 QLT-01 QLT-02 QLT-03 QLT-05 QLT-09 QLT-10 QLT-11">
+    <div id="list" class="list-slot"></div>
+    <aside id="notes" class="notes-slot" tabindex="-1" aria-label="Review notes"></aside>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <footer id="footer" class="app-footer"></footer>
+  <div id="overlay"></div>
+  <div id="owner"></div>
+  <div id="sim-slot" class="sim-slot"></div>
+  <p class="visually-hidden" role="status" id="sim-status"></p>
+</body>
+</html>
